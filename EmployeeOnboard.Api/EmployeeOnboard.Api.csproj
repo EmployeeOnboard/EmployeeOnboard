@@ -9,7 +9,13 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EmployeeOnboard.Application\EmployeeOnboard.Application.csproj" />
+    <ProjectReference Include="..\EmployeeOnboard.Infrastructure\EmployeeOnboard.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

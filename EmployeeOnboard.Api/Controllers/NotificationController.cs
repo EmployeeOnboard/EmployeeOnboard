@@ -1,0 +1,25 @@
+﻿using EmployeeOnboard.Application.DTOs;
+using EmployeeOnboard.Application.Interfaces.Services;
+using EmployeeOnboard.Infrastructure.Services.Notification;
+using Microsoft.AspNetCore.Mvc;
+
+namespace EmployeeOnboard.Api.Controllers
+{
+    public class NotificationController : ControllerBase
+    {
+        private readonly INotificationService _notificationService;
+
+        public NotificationController(INotificationService notificationService)
+        {
+            _notificationService = notificationService;
+        }
+
+        [HttpPost ("send-email")]
+        public async Task<IActionResult> SendEmail([FromBody] EmailRequestDto request)
+        {
+            await _notificationService.SendEmailAsync(request);
+
+            return Ok("Email sent successfully!");
+        }
+    }
+}
