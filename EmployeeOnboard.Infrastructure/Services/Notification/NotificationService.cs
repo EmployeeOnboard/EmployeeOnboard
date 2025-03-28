@@ -24,30 +24,46 @@ namespace EmployeeOnboard.Infrastructure.Services.Notification
 
         public async Task SendEmailAsync(EmailRequestDto request)
         {
-            var smtpClient = new SmtpClient
+            try
             {
-                Host = _configuration["Smtp:Host"],
-                Port = int.Parse(_configuration["Smtp:Port"]),
-                EnableSsl = true,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(
-                    _configuration["Smtp:Username"],
-                    _configuration["Smtp:Password"]
-                )
-            };
+                var smtpClient = new SmtpClient
+                {
+                    Host = _configuration["Smtp:Host"],
+                    Port = int.Parse(_configuration["Smtp:Port"]),
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(
+                        _configuration["Smtp:Username"],
+                        _configuration["Smtp:Password"]
+                    )
+                };
 
-            var mailMessage = new MailMessage
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(_configuration["Smtp:FromEmail"]),
+                    Subject = request.Subject,
+                    Body = request.Body,
+                    IsBodyHtml = true
+                };
+
+                mailMessage.To.Add(request.To);
+
+                await smtpClient.SendMailAsync(mailMessage);
+            }
+
+            catch (SmtpException smtpEx)
             {
-                From = new MailAddress(_configuration["Smtp:FromEmail"]),
-                Subject = request.Subject,
-                Body = request.Body,
-                IsBodyHtml = true
-            };
-
-            mailMessage.To.Add(request.To);
-
-            await smtpClient.SendMailAsync(mailMessage);
+                // Log the error or handle specifically for SMTP-related errors
+                Console.WriteLine($"SMTP Error: {smtpEx.Message}");
+                
+            }
+            catch (Exception ex)
+            {
+                // Handle any other general exceptions
+                Console.WriteLine($"General Error: {ex.Message}");
+                throw;
+            }
         }
     }
 }

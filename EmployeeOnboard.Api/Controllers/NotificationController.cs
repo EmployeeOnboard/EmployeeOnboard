@@ -14,12 +14,19 @@ namespace EmployeeOnboard.Api.Controllers
             _notificationService = notificationService;
         }
 
-        [HttpPost ("send-email")]
+        [HttpPost("send-email")]
         public async Task<IActionResult> SendEmail([FromBody] EmailRequestDto request)
         {
-            await _notificationService.SendEmailAsync(request);
-
-            return Ok("Email sent successfully!");
+            try
+            {
+                await _notificationService.SendEmailAsync(request);
+                return Ok("Email sent successfully!");
+            }
+            catch (Exception)
+            {
+                
+                return StatusCode(500, "Failed to send email.");
+            }
         }
     }
 }
