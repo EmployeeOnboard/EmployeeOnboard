@@ -21,9 +21,6 @@ namespace EmployeeOnboard.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Users>();
-                //.HasNoKey();
-
-
 
         }
     }
