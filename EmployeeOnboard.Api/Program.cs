@@ -1,11 +1,34 @@
+using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
+using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
+using EmployeeOnboard.Application.Services;
+using EmployeeOnboard.Application.Validators;
+using EmployeeOnboard.Infrastructure.Data;
+using EmployeeOnboard.Infrastructure.Repositories;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterEmployeeValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//register repositories
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+//register services
+builder.Services.AddScoped<IRegisterService, RegisterService>();
+
+//db connection
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
 
 var app = builder.Build();
 
@@ -16,6 +39,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
