@@ -1,4 +1,5 @@
 ﻿using EmployeeOnboard.Application.DTOs;
+using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,12 +10,12 @@ namespace EmployeeOnboard.Api.Controllers
     [ApiController]
     public class RegisterController : ControllerBase
     {
-        private readonly RegisterService _registerService;
+        private readonly IRegisterService _registerService;
         private readonly ILogger<RegisterController> _logger;
-        public RegisterController(RegisterService registerService, ILogger<RegisterController> logger)
+        public RegisterController(IRegisterService registerService, ILogger<RegisterController> logger)
         {
-            _registerService = registerService;
-            _logger = logger;
+            _registerService = registerService ?? throw new ArgumentNullException(nameof(registerService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpPost("register")]
