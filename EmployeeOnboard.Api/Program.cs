@@ -1,9 +1,10 @@
 using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
-using EmployeeOnboard.Application.Services;
+using EmployeeOnboard.Application.Mappings;
 using EmployeeOnboard.Application.Validators;
 using EmployeeOnboard.Infrastructure.Data;
 using EmployeeOnboard.Infrastructure.Repositories;
+using EmployeeOnboard.Infrastructure.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ builder.Services.AddFluentValidationAutoValidation()
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterEmployeeValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 //register repositories
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();

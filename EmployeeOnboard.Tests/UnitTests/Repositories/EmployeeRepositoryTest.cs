@@ -1,4 +1,5 @@
-﻿using EmployeeOnboard.Domain.Entities;
+﻿using AutoMapper;
+using EmployeeOnboard.Domain.Entities;
 using EmployeeOnboard.Infrastructure.Data;
 using EmployeeOnboard.Infrastructure.Repositories;
 using FluentAssertions;
@@ -23,12 +24,14 @@ public class EmployeeRepositoryTest
     }
 
     [Fact]
-    public async Task AddAsync_Should_AddEmployee_ToDatabase() // this will ensure that the employee is stored properly
+    public async Task AddAsync_Should_AddEmployee_ToDatabase() // ensure that the employee is stored properly
     {
         var employee = new Employee
         {
             Id = Guid.NewGuid(),
-            FullName = "John Doe",
+            FirstName = "John",
+            MiddleName = "",
+            LastName = "Doe",
             Email = "john.doe@example.com",
             EmployeeNumber = "EMP001",
             Password = "hashedpassword",
@@ -49,7 +52,9 @@ public class EmployeeRepositoryTest
         var employee = new Employee
         {
             Id = Guid.NewGuid(),
-            FullName = "Jane Doe",
+            FirstName = "John",
+            MiddleName = "",
+            LastName = "Doe",
             Email = "jane.doe@example.com",
             EmployeeNumber = "EMP002",
             Password = "hashedpassword",

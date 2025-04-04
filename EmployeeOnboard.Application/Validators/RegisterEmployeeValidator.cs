@@ -1,11 +1,12 @@
 ﻿
 using EmployeeOnboard.Application.DTOs;
+using EmployeeOnboard.Domain.Entities;
 using FluentValidation;
 using System.Text.RegularExpressions;
 
 namespace EmployeeOnboard.Application.Validators
 {
-    public class RegisterEmployeeValidator: AbstractValidator<RegisterEmployeeDTO>
+    public class RegisterEmployeeValidator: AbstractValidator<Employee>
     {
         private bool BeValidKenyanPhoneNumber(string phoneNumber)
         {

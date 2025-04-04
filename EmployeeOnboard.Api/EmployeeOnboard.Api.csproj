@@ -6,13 +6,13 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 	
-	<PropertyGroup>
+	<!--<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<InternalsVisibleTo Include="EmployeeOnboard.Tests" />
-	</ItemGroup>
+	</ItemGroup>-->
 
 	<ItemGroup>
 		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />

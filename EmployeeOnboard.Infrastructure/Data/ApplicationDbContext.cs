@@ -19,6 +19,7 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
+
         //used a hardcoded guid to prevent ef core from assuming that the model has changed
         var superAdminId = Guid.Parse("e7d93a90-78e4-4b0f-bc93-1f78b91d6a52");
         const string superAdminHashedPassword = "$2a$11$Hj2Qj7fPKfTrRUzWYV9nNuec7Yl3xjlJYoE7O7E8R0gGJ9B6xNG1q";
@@ -26,7 +27,9 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Employee>().HasData(new Employee
         {
             Id = superAdminId,
-            FullName = "Super Admin",
+            FirstName = "Super",
+            MiddleName = "", 
+            LastName = "Admin",
             Email = "superadmin@company.com",
             EmployeeNumber = "SUPERADMIN01",
             Password = superAdminHashedPassword,
