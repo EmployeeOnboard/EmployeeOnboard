@@ -26,6 +26,7 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 //register services
 builder.Services.AddScoped<IRegisterService, RegisterService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 //db connection
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

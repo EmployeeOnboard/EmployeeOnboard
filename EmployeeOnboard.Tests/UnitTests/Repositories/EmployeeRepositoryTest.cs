@@ -40,7 +40,7 @@ public class EmployeeRepositoryTest
         };
 
         await _employeeRepository.AddAsync(employee);
-        var result = await _employeeRepository.GetByIdAsync(employee.Id);
+        var result = await _employeeRepository.GetByEmployeeNumberAsync(employee.EmployeeNumber);
 
         result.Should().NotBeNull();
         result.Email.Should().Be(employee.Email);

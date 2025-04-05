@@ -8,7 +8,7 @@
 
 //namespace EmployeeOnboard.Tests.IntegrationTests;
 
-//internal class EmployeeOnboardingApiFactory : WebApplicationFactory<Program> // made this internal since program.cs is internal by default and it cant be accessed by a public class
+//public class EmployeeOnboardingApiFactory : WebApplicationFactory<Program> // made this internal since program.cs is internal by default and it cant be accessed by a public class
 //{
 //    protected override void ConfigureWebHost(IWebHostBuilder builder)
 //    {

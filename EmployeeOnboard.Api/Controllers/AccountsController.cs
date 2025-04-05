@@ -7,15 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeOnboard.Api.Controllers
 {
-    [Route("api/employees")]
+    [Route("api/account")]
     [ApiController]
-    public class RegisterController : ControllerBase
+    public class AccountsController : ControllerBase
     {
         private readonly IRegisterService _registerService;
-        private readonly ILogger<RegisterController> _logger;
+        private readonly ILogger<AccountsController> _logger;
         private readonly IMapper _mapper;
 
-        public RegisterController(IRegisterService registerService, ILogger<RegisterController> logger, IMapper mapper)
+        public AccountsController(IRegisterService registerService, ILogger<AccountsController> logger, IMapper mapper)
         {
             _registerService = registerService ?? throw new ArgumentNullException(nameof(registerService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

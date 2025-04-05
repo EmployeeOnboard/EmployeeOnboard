@@ -1,6 +1,7 @@
 ﻿
 using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
 using EmployeeOnboard.Domain.Entities;
+using EmployeeOnboard.Domain.Enums;
 using EmployeeOnboard.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,16 +22,6 @@ public class EmployeeRepository : IEmployeeRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Employee employee)
-    {
-        if (employee.Role == "SuperAdmin")
-        {
-            throw new InvalidOperationException("Super Admin cannot be deleted."); //this will prevent deletion of the superadmin 
-        }
-        _context.Employees.Remove(employee);
-        await _context.SaveChangesAsync();
-    }
-
     public async Task<bool> ExistsByEmailAsync(string email)
     {
         return await _context.Employees.AnyAsync(e => e.Email == email);
@@ -41,9 +32,11 @@ public class EmployeeRepository : IEmployeeRepository
         return await _context.Employees.AnyAsync(e => e.EmployeeNumber == employeeNumber);
     }
 
-    public async Task<List<Employee>> GetAllAsync()
+    public async Task<List<Employee>> GetAllActiveAsync()
     {
-        return await _context.Employees.ToListAsync();
+        return await _context.Employees
+            .Where(e => e.Status == EmployeeStatus.Active)
+            .ToListAsync();
     }
 
     public async Task<Employee?> GetByEmailAsync(string email)
@@ -54,11 +47,6 @@ public class EmployeeRepository : IEmployeeRepository
     public async Task<Employee?> GetByEmployeeNumberAsync(string employeeNumber)
     {
        return await _context.Employees.FirstOrDefaultAsync(e=>e.EmployeeNumber == employeeNumber);
-    }
-
-    public async Task<Employee?> GetByIdAsync(Guid id)
-    {
-        return await _context.Employees.FindAsync(id);
     }
 
     public async Task UpdateAsync(Employee employee)
