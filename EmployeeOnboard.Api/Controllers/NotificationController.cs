@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeOnboard.Api.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;
@@ -22,10 +24,10 @@ namespace EmployeeOnboard.Api.Controllers
                 await _notificationService.SendEmailAsync(request);
                 return Ok("Email sent successfully!");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 
-                return StatusCode(500, "Failed to send email.");
+                return StatusCode(500, $"Failed to send email. Error: {ex.Message} | StackTrace: {ex.StackTrace}");
             }
         }
     }

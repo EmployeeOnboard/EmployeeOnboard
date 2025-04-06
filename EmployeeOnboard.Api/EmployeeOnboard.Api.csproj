@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Templates\EmailTemplates.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="EmailTemplates.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
@@ -16,6 +26,10 @@
   <ItemGroup>
     <ProjectReference Include="..\EmployeeOnboard.Application\EmployeeOnboard.Application.csproj" />
     <ProjectReference Include="..\EmployeeOnboard.Infrastructure\EmployeeOnboard.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Templates\" />
   </ItemGroup>
 
 </Project>

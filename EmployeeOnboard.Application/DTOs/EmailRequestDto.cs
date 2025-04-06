@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace EmployeeOnboard.Application.DTOs
 {
+
     public class EmailRequestDto
     {
         public string To { get; set; }
-        public string Subject { get; set; }
-        public string Body { get; set; }
+        public string TemplateKey { get; set; }
+        public Dictionary<string, string> Placeholders { get; set; } = new();
+
+
     }
 }

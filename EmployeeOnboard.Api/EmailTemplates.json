@@ -1,0 +1,14 @@
+﻿{
+    "EmailTemplates": {
+        "WelcomeEmail": {
+            "Subject": "Welcome to {CompanyName}!",
+            "Body": "<html><body><h2>Hello {UserName},</h2><p>Welcome to {CompanyName}! We are excited to have you.</p><p>Regards, <br>{AdminName}</p></body></html>"
+        },
+
+        "PasswordReset": {
+            "Subject": "Reset Your Password",
+            "Body": "<html><body><p>Hello {UserName},</p><p>Click <a href='{ResetLink}'>here</a> to reset your password.</p><p>If you didn't request this, please ignore this email.</p></body></html>"
+        }
+    }
+   
+}

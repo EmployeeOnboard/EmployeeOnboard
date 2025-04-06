@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Net.Mail;
 using System.Threading.Tasks;
-using EmployeeOnboard.Application.DTOs;
-
 
 namespace EmployeeOnboard.Application.Interfaces.Services
 {
-    public interface INotificationService
+    public interface ISmtpClientWrapper
     {
-        Task SendEmailAsync(EmailRequestDto request);
+        Task SendMailAsync(MailMessage message);
     }
 }
+
