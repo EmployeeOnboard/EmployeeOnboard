@@ -15,7 +15,7 @@ namespace EmployeeOnboard.Api.Controllers
         }
 
         [HttpPut("disable/{employeeNumber}")]
-        public async Task<IActionResult> DisableEmployee(string employeeNumber)
+        public async Task<IActionResult> DisableEmployee([FromRoute] string employeeNumber)
         {
             var result = await _userService.DisableEmployeeAsync(employeeNumber);
 
@@ -26,7 +26,7 @@ namespace EmployeeOnboard.Api.Controllers
         }
 
         [HttpGet("get-employee/{employeeNumber}")]
-        public async Task<IActionResult> GetByEmployeeNumber(string employeeNumber)
+        public async Task<IActionResult> GetByEmployeeNumber([FromRoute] string employeeNumber)
         {
             var result = await _userService.GetByEmployeeNumberAsync(employeeNumber);
             if (result == null)
@@ -37,7 +37,7 @@ namespace EmployeeOnboard.Api.Controllers
         }
 
         [HttpPut("enable/{employeeNumber}")]
-        public async Task<IActionResult> EnableEmployee(string employeeNumber)
+        public async Task<IActionResult> EnableEmployee([FromRoute] string employeeNumber)
         {
             var result = await _userService.EnableEmployeeAsync(employeeNumber);
             if (!result)
@@ -52,5 +52,16 @@ namespace EmployeeOnboard.Api.Controllers
             var employees = await _userService.GetAllActiveEmployeesAsync();
             return Ok(employees);
         }
+
+        [HttpGet("email")]
+        public async Task<IActionResult> GetEmployeeByEmail([FromQuery] string email)
+        {
+            var employee = await _userService.GetEmployeeByEmailAsync(email);
+
+            if (employee == null)
+                return NotFound($"Employee with email {email} not found.");
+
+            return Ok(employee);
+        }      
     }
 }

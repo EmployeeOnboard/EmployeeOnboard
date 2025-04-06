@@ -105,4 +105,15 @@ public class UserService : IUserService
         var employees = await _employeeRepository.GetAllActiveAsync();
         return _mapper.Map<List<EmployeeResponseDTO>>(employees);
     }
+
+    public async Task<EmployeeResponseDTO?> GetEmployeeByEmailAsync(string email)
+    {
+       var employee = await _employeeRepository.GetByEmailAsync(email);
+        if (employee == null)
+        {
+            _logger.LogWarning("Employee with email {Email} not found.", email);
+            return null;
+        }
+        return _mapper.Map<EmployeeResponseDTO>(employee);
+    }
 }
