@@ -2,7 +2,7 @@
     "EmailTemplates": {
         "WelcomeEmail": {
             "Subject": "Welcome to {CompanyName}!",
-            "Body": "<html><body><h2>Hello {UserName},</h2><p>Welcome to {CompanyName}! We are excited to have you.</p><p>Regards, <br>{AdminName}</p></body></html>"
+            "Body": "<html><body><h3>Hello {UserName},</h3> <p>Welcome to {CompanyName}! We are excited to have you.</p> <p>Regards, <br>{AdminName}</p></body></html>"
         },
 
         "PasswordReset": {

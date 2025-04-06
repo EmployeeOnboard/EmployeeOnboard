@@ -1,92 +1,256 @@
 ﻿using Xunit;
-using Moq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using EmployeeOnboard.Infrastructure.Services.Notification;
-using EmployeeOnboard.Infrastructure.Models;
 using System.Collections.Generic;
-
+using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
 
 namespace EmployeeOnboard.Tests.UnitTests.Services
 {
     public class EmailTemplateServiceTests
     {
+        [Fact]
+        public void GetTemplate_ValidKey_ReturnsTemplate()
+        {
+            // Arrange
+            var inMemorySettings = new Dictionary<string, string> {
+                {"EmailTemplates:Welcome:Subject", "Test Subject"},
+                {"EmailTemplates:Welcome:Body", "Test Body"}
+            };
 
-    [Fact]
-    public void GetTemplate_ValidKey_ReturnsTemplate()
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
+
+            var logger = new NullLogger<EmailTemplateService>();
+
+            var service = new EmailTemplateService(configuration, logger);
+
+            // Act
+            var template = service.GetTemplate("Welcome");
+
+            // Assert
+            Assert.Equal("Test Subject", template.Subject);
+            Assert.Equal("Test Body", template.Body);
+        }
+
+        [Fact]
+        public void GetTemplate_MissingSubject_ReturnsEmptySubject()
+        {
+            // Arrange
+            var configData = new Dictionary<string, string>
     {
-        // Arrange
-        var mockConfig = new Mock<IConfiguration>();
-        var mockSection = new Mock<IConfigurationSection>();
-        var logger = new Mock<ILogger<EmailTemplateService>>();
-
-        mockSection.Setup(s => s.Exists()).Returns(true);
-        mockSection.Setup(s => s["Subject"]).Returns("Test Subject");
-        mockSection.Setup(s => s["Body"]).Returns("Test Body");
-
-        mockConfig.Setup(c => c.GetSection("EmailTemplates:Welcome")).Returns(mockSection.Object);
-
-        var service = new EmailTemplateService(mockConfig.Object, logger.Object);
-
-        // Act
-        var template = service.GetTemplate("Welcome");
-
-        // Assert
-        Assert.Equal("Test Subject", template.Subject);
-        Assert.Equal("Test Body", template.Body);
-    }
-
-    [Fact]
-    public void GetTemplate_InvalidKey_ThrowsKeyNotFoundException()
-    {
-        // Arrange
-        var mockConfig = new Mock<IConfiguration>();
-        var mockSection = new Mock<IConfigurationSection>();
-        var logger = new Mock<ILogger<EmailTemplateService>>();
-
-        mockSection.Setup(s => s.Exists()).Returns(false);
-        mockConfig.Setup(c => c.GetSection("EmailTemplates:InvalidKey")).Returns(mockSection.Object);
-
-        var service = new EmailTemplateService(mockConfig.Object, logger.Object);
-
-        // Act & Assert
-        Assert.Throws<KeyNotFoundException>(() => service.GetTemplate("InvalidKey"));
-    }
-
-    [Fact]
-    public void ReplacePlaceholders_ReplacesAllPlaceholders_ReturnsReplacedTemplate()
-    {
-        // Arrange
-        var service = new EmailTemplateService(new Mock<IConfiguration>().Object, new Mock<ILogger<EmailTemplateService>>().Object);
-        var subject = "Hello {UserName}";
-        var body = "Welcome to the system, {UserName}.";
-        var placeholders = new Dictionary<string, string>
-    {
-        { "UserName", "John Doe" }
+        {"EmailTemplates:PartialTemplate:Body", "Only body is present"}
     };
 
-        // Act
-        var result = service.ReplacePlaceholders(subject, body, placeholders);
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(configData)
+                .Build();
 
-        // Assert
-        Assert.Equal("Hello John Doe", result.Subject);
-        Assert.Equal("Welcome to the system, John Doe.", result.Body);
-    }
+            var logger = new Mock<ILogger<EmailTemplateService>>();
+            var service = new EmailTemplateService(configuration, logger.Object);
 
-    [Fact]
-    public void ReplacePlaceholders_NoPlaceholders_ReturnsOriginalTemplate()
+            // Act
+            var result = service.GetTemplate("PartialTemplate");
+
+            // Assert
+            Assert.Equal("", result.Subject);
+            Assert.Equal("Only body is present", result.Body);
+        }
+
+        [Fact]
+        public void GetTemplate_MissingBody_ReturnsEmptyBody()
+        {
+            // Arrange
+            var configData = new Dictionary<string, string>
     {
-        // Arrange
-        var service = new EmailTemplateService(new Mock<IConfiguration>().Object, new Mock<ILogger<EmailTemplateService>>().Object);
-        var subject = "Hello {UserName}";
-        var body = "Welcome to the system, {UserName}.";
+        {"EmailTemplates:PartialTemplate:Subject", "Only subject is present"}
+    };
 
-        // Act
-        var result = service.ReplacePlaceholders(subject, body, null);
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(configData)
+                .Build();
 
-        // Assert
-        Assert.Equal(subject, result.Subject);
-        Assert.Equal(body, result.Body);
+            var logger = new Mock<ILogger<EmailTemplateService>>();
+            var service = new EmailTemplateService(configuration, logger.Object);
+
+            // Act
+            var result = service.GetTemplate("PartialTemplate");
+
+            // Assert
+            Assert.Equal("Only subject is present", result.Subject);
+            Assert.Equal("", result.Body);
+        }
+
+        [Fact]
+        public void GetTemplate_EmptySubjectAndBody_ReturnsEmptyStrings()
+        {
+            // Arrange
+            var configData = new Dictionary<string, string>
+    {
+        {"EmailTemplates:EmptyTemplate:Subject", ""},
+        {"EmailTemplates:EmptyTemplate:Body", ""}
+    };
+
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(configData)
+                .Build();
+
+            var logger = new Mock<ILogger<EmailTemplateService>>();
+            var service = new EmailTemplateService(configuration, logger.Object);
+
+            // Act
+            var result = service.GetTemplate("EmptyTemplate");
+
+            // Assert
+            Assert.Equal("", result.Subject);
+            Assert.Equal("", result.Body);
+        }
+
+        [Fact]
+        public void ReplacePlaceholders_ReplacesAllPlaceholdersCorrectly()
+        {
+            // Arrange
+            var service = new EmailTemplateService(new ConfigurationBuilder().Build(), Mock.Of<ILogger<EmailTemplateService>>());
+
+            string subject = "Welcome {UserName}";
+            string body = "Hello {UserName}, your role is {Role}.";
+
+            var placeholders = new Dictionary<string, string>
+    {
+        {"UserName", "Alice"},
+        {"Role", "Developer"}
+    };
+
+            // Act
+            var (finalSubject, finalBody) = service.ReplacePlaceholders(subject, body, placeholders);
+
+            // Assert
+            Assert.Equal("Welcome Alice", finalSubject);
+            Assert.Equal("Hello Alice, your role is Developer.", finalBody);
+        }
+
+        [Fact]
+        public void ReplacePlaceholders_NullPlaceholders_ReturnsOriginalTemplate()
+        {
+            // Arrange
+            var service = new EmailTemplateService(new ConfigurationBuilder().Build(), Mock.Of<ILogger<EmailTemplateService>>());
+
+            string subject = "Hello {UserName}";
+            string body = "Welcome to the system, {UserName}.";
+
+            // Act
+            var (finalSubject, finalBody) = service.ReplacePlaceholders(subject, body, null);
+
+            // Assert
+            Assert.Equal(subject, finalSubject);
+            Assert.Equal(body, finalBody);
+        }
+
+        [Fact]
+        public void ReplacePlaceholders_EmptyDictionary_ReturnsOriginalTemplate()
+        {
+            // Arrange
+            var service = new EmailTemplateService(new ConfigurationBuilder().Build(), Mock.Of<ILogger<EmailTemplateService>>());
+
+            string subject = "Welcome {UserName}";
+            string body = "Hi {UserName}, your account is ready.";
+            var placeholders = new Dictionary<string, string>(); // empty
+
+            // Act
+            var (finalSubject, finalBody) = service.ReplacePlaceholders(subject, body, placeholders);
+
+            // Assert
+            Assert.Equal(subject, finalSubject);
+            Assert.Equal(body, finalBody);
+        }
+
+        [Fact]
+        public void ReplacePlaceholders_BodyOnlyPlaceholders_ReplacesCorrectly()
+        {
+            // Arrange
+            var service = new EmailTemplateService(new ConfigurationBuilder().Build(), Mock.Of<ILogger<EmailTemplateService>>());
+
+            string subject = "Welcome Email";
+            string body = "Hello {UserName}, welcome!";
+            var placeholders = new Dictionary<string, string>
+    {
+        { "UserName", "Jane" }
+    };
+
+            // Act
+            var (finalSubject, finalBody) = service.ReplacePlaceholders(subject, body, placeholders);
+
+            // Assert
+            Assert.Equal("Welcome Email", finalSubject);
+            Assert.Equal("Hello Jane, welcome!", finalBody);
+        }
+
+        [Fact]
+        public void ReplacePlaceholders_SubjectOnlyPlaceholders_ReplacesCorrectly()
+        {
+            // Arrange
+            var service = new EmailTemplateService(new ConfigurationBuilder().Build(), Mock.Of<ILogger<EmailTemplateService>>());
+
+            string subject = "Hello {UserName}";
+            string body = "No placeholders here.";
+            var placeholders = new Dictionary<string, string>
+    {
+        { "UserName", "Jane" }
+    };
+
+            // Act
+            var (finalSubject, finalBody) = service.ReplacePlaceholders(subject, body, placeholders);
+
+            // Assert
+            Assert.Equal("Hello Jane", finalSubject);
+            Assert.Equal(body, finalBody);
+        }
+
+        [Fact]
+        public void ReplacePlaceholders_MultiplePlaceholders_ReplacesAllCorrectly()
+        {
+            // Arrange
+            var service = new EmailTemplateService(new ConfigurationBuilder().Build(), Mock.Of<ILogger<EmailTemplateService>>());
+
+            string subject = "Hello {UserName}";
+            string body = "Hi {UserName}, your role is {UserRole}.";
+            var placeholders = new Dictionary<string, string>
+    {
+        { "UserName", "John" },
+        { "UserRole", "Developer" }
+    };
+
+            // Act
+            var (finalSubject, finalBody) = service.ReplacePlaceholders(subject, body, placeholders);
+
+            // Assert
+            Assert.Equal("Hello John", finalSubject);
+            Assert.Equal("Hi John, your role is Developer.", finalBody);
+        }
+
+        [Fact]
+        public void ReplacePlaceholders_UnusedPlaceholder_DoesNothing()
+        {
+            // Arrange
+            var service = new EmailTemplateService(new ConfigurationBuilder().Build(), Mock.Of<ILogger<EmailTemplateService>>());
+
+            string subject = "Hi there";
+            string body = "Welcome to the platform!";
+            var placeholders = new Dictionary<string, string>
+    {
+        { "UnusedKey", "Value" }
+    };
+
+            // Act
+            var (finalSubject, finalBody) = service.ReplacePlaceholders(subject, body, placeholders);
+
+            // Assert
+            Assert.Equal(subject, finalSubject);
+            Assert.Equal(body, finalBody);
+        }
+
+
     }
-
 }

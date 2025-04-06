@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Templates\EmailTemplates.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="EmailTemplates.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -26,10 +22,6 @@
   <ItemGroup>
     <ProjectReference Include="..\EmployeeOnboard.Application\EmployeeOnboard.Application.csproj" />
     <ProjectReference Include="..\EmployeeOnboard.Infrastructure\EmployeeOnboard.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Templates\" />
   </ItemGroup>
 
 </Project>
