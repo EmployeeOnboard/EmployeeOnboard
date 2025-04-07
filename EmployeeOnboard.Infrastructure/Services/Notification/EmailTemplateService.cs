@@ -51,7 +51,7 @@ public class EmailTemplateService
     public (string Subject, string Body) ReplacePlaceholders(string templateSubject, string templateBody, Dictionary<string, string> placeholders)
     {
         if (placeholders == null || placeholders.Count == 0)
-        {
+       {
             Console.WriteLine("No placeholders provided.");
             return (templateSubject, templateBody);
         }
