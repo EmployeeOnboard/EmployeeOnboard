@@ -17,4 +17,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EmployeeOnboard.Application\EmployeeOnboard.Application.csproj" />
+  </ItemGroup>
+
 </Project>
