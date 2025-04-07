@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using EmployeeOnboard.Infrastructure.Models;
 using Azure.Core;
+using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 
 
 namespace EmployeeOnboard.Infrastructure.Services.Notification

@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using EmployeeOnboard.Application.Interfaces.Services;
+using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using Microsoft.Extensions.Configuration;
 
 public class SmtpClientWrapper : ISmtpClientWrapper
