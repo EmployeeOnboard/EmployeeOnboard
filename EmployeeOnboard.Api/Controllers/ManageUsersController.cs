@@ -20,7 +20,7 @@ namespace EmployeeOnboard.Api.Controllers
             var result = await _userService.DisableEmployeeAsync(employeeNumber);
 
             if (!result)
-                return NotFound("Employee not found or already disabled");
+                return NotFound($"Employee with employee number {employeeNumber} not found or already disabled");
 
             return Ok($"Employee with employee number {employeeNumber} is disabled.");
         }

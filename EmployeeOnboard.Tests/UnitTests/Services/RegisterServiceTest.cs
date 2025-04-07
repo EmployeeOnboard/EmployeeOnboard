@@ -23,14 +23,11 @@ public class RegisterServiceTest
     [Fact]
     public async Task RegisterEmployeeAsync_ShouldReturnError_WhenEmailExists()
     {
-        //Arrange
         var dto = new Employee { Email = "existing@example.com", FirstName = "John", MiddleName = "Jane", LastName = "Doe", PhoneNumber = "254712345678", Role = "Developer" };
         _employeeRepositoryMock.Setup(repo => repo.ExistsByEmailAsync(dto.Email)).ReturnsAsync(true);
 
-        //Act
         var result = await _registerService.RegisterEmployeeAsync(dto);
 
-        //Assert
         result.Should().Be((false, "Email already exists"));
     }
     [Fact]
