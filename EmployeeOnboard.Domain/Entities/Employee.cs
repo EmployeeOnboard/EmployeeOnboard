@@ -1,7 +1,6 @@
 ﻿using EmployeeOnboard.Domain.Enums;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
+
 
 namespace EmployeeOnboard.Domain.Entities;
 

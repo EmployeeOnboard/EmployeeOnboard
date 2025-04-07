@@ -2,7 +2,7 @@
 using EmployeeOnboard.Application.DTOs;
 using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
 using EmployeeOnboard.Domain.Entities;
-using EmployeeOnboard.Infrastructure.Services;
+using EmployeeOnboard.Infrastructure.Services.Employee;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;

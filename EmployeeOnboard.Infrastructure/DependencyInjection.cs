@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
+using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Application.Interfaces.Services;
+using EmployeeOnboard.Infrastructure.Repositories;
+using EmployeeOnboard.Infrastructure.Services;
 using EmployeeOnboard.Infrastructure.Services.Notification;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,11 +13,18 @@ namespace EmployeeOnboard.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            // Register NotificationService with INotificationService interface
+            // Register Services
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IRegisterService, RegisterService>();
+            services.AddScoped<IUserService, UserService>();
 
             // Register EmailTemplateService
             services.AddScoped<EmailTemplateService>();
+
+            //Register Repositories 
+
+            //register repositories
+           services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
             // Register SmtpClientWrapper for dependency injection
             services.AddTransient<ISmtpClientWrapper>(provider =>
