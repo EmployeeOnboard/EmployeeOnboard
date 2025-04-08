@@ -1,39 +1,41 @@
-﻿
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using EmployeeOnboard.Application.DTOs;
 using EmployeeOnboard.Application.Interfaces;
 using EmployeeOnboard.Infrastructure.Persistence;
 using EmployeeOnboard.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace EmployeeOnboard.Infrastructure.Services
 {
-    public class AuthService : IAuthService
+    public class LoginService : IAuthService
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<LoginService> _logger;
 
-        public AuthService(ApplicationDbContext context, IConfiguration configuration)
+        public LoginService(ApplicationDbContext context, IConfiguration configuration, ILogger<LoginService> logger)
         {
             _context = context;
             _configuration = configuration;
+            _logger = logger;
         }
 
         public async Task<AuthResponseDTO> LoginAsync(LoginDTO loginDTO)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDTO.Email);
-            if (user == null)
+            
+
+            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.PasswordHash))
             {
                 return new AuthResponseDTO
                 {
-                    Token = null,
                     Message = "Invalid credentials",
                     Success = false
                 };
@@ -41,44 +43,17 @@ namespace EmployeeOnboard.Infrastructure.Services
 
             var token = GenerateJwtToken(user);
             var refreshToken = GenerateRefreshToken();
-
-            // Save refresh token
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(5); // Expiry for testing
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
             _context.Users.Update(user);
-            await _context.SaveChangesAsync(); // Ensure this runs
+            await _context.SaveChangesAsync();
 
             return new AuthResponseDTO
             {
                 Token = token,
                 RefreshToken = refreshToken,
                 Message = "Successfully logged in",
-                Success = true
-            };
-        }
-
-
-        public async Task<AuthResponseDTO> RefreshTokenAsync(string refreshToken)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
-            if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
-            {
-                return new AuthResponseDTO { Token = null, Message = "Invalid or expired refresh token", Success = false };
-            }
-
-            var newAccessToken = GenerateJwtToken(user);
-            var newRefreshToken = GenerateRefreshToken();
-
-            user.RefreshToken = newRefreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-            await _context.SaveChangesAsync();
-
-            return new AuthResponseDTO
-            {
-                Token = newAccessToken,
-                RefreshToken = newRefreshToken,
-                Message = "Token refreshed successfully",
                 Success = true
             };
         }
@@ -92,14 +67,16 @@ namespace EmployeeOnboard.Infrastructure.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) // Ensure this claim exists
             };
+
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(5),
+                expires: DateTime.UtcNow.AddHours(2),
                 signingCredentials: credentials
             );
 
@@ -117,13 +94,4 @@ namespace EmployeeOnboard.Infrastructure.Services
         }
     }
 }
-
-
-
-
-
-
-
-
-
 
