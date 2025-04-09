@@ -1,1 +1,5 @@
-@EmployeeOnboard.Api_HostAddress = https://localhost:7106
+@EmployeeOnboard.Api_HostAddress = https://localhost:5141
+
+Send request | Debug
+GET {{EmployeeOnboard.Api_HostAddress}}/weatherforecast/
+Accept: application/json

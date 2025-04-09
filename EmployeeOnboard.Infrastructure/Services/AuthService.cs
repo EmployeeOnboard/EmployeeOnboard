@@ -24,6 +24,6 @@ namespace EmployeeOnboard.Infrastructure.Services
             await _emailService.SendAsync(email, "Reset Your Password", $"Click here: {resetLink}");
 
             return (true, "Reset link sent.");
-        }
+        } 
     }
 }
