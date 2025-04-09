@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using EmployeeOnboard.Infrastructure.Services;
-using EmployeeOnboard.Infrastructure.Persistence;
 using EmployeeOnboard.Domain.Entities;
+using EmployeeOnboard.Infrastructure.Data;
 
 public class LogoutServiceTests
 {
@@ -25,8 +25,8 @@ public class LogoutServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = new Users { Id = userId, RefreshToken = "some_token" };
-        _context.Users.Add(user);
+        var user = new Employee { Id = userId, RefreshToken = "some_token" };
+        _context.Employees.Add(user);
         await _context.SaveChangesAsync();
 
         // Act
@@ -35,7 +35,7 @@ public class LogoutServiceTests
         // Assert
         Assert.True(result);
 
-        var updatedUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var updatedUser = await _context.Employees.FirstOrDefaultAsync(u => u.Id == userId);
         Assert.Null(updatedUser.RefreshToken);  // Ensure the token was cleared
     }
 

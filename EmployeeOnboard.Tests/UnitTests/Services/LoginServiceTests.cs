@@ -3,10 +3,10 @@ using Xunit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using EmployeeOnboard.Infrastructure.Services;
-using EmployeeOnboard.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using EmployeeOnboard.Domain.Entities;
 using EmployeeOnboard.Application.DTOs;
+using EmployeeOnboard.Infrastructure.Data;
 
 
 public class AuthServiceTests
@@ -36,16 +36,16 @@ public class AuthServiceTests
     public async Task LoginAsync_ValidCredentials_ReturnsToken()
     {
         // Arrange
-        var testUser = new Users
+        var testUser = new Employee
         {
             Id = Guid.NewGuid(),
-            Name = "John",
+            //Name = "John",
             Email = "test@example.com",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("correct_password")
-            //PasswordHash = "hashed_password"
+            Password = BCrypt.Net.BCrypt.HashPassword("correct_password")
+           
         };
 
-        await _dbContext.Users.AddAsync(testUser);
+        await _dbContext.Employees.AddAsync(testUser);
         await _dbContext.SaveChangesAsync();
 
         var loginDto = new LoginDTO { Email = "test@example.com", Password = "correct_password" };

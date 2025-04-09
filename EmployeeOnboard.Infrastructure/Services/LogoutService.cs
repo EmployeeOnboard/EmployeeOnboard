@@ -1,6 +1,7 @@
 ﻿using EmployeeOnboard.Application.Interfaces;
-using EmployeeOnboard.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using EmployeeOnboard.Infrastructure.Data;
+using EmployeeOnboard.Domain.Entities;
 
 
 namespace EmployeeOnboard.Infrastructure.Services
@@ -16,7 +17,7 @@ namespace EmployeeOnboard.Infrastructure.Services
 
         public async Task<bool> LogoutAsync(Guid userId)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _context.Employees.FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null) return false;
 

@@ -4,14 +4,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.13.35913.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeOnboard.Api", "EmployeeOnboard.Api\EmployeeOnboard.Api.csproj", "{42C5AD4A-86CB-40B5-95FB-6C2C651822D9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{66EC6325-EC0D-4F7F-82E2-D6D1527D38F1} = {66EC6325-EC0D-4F7F-82E2-D6D1527D38F1}
+		{8572C276-4998-4589-B9F6-AC4F1E4CB514} = {8572C276-4998-4589-B9F6-AC4F1E4CB514}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeOnboard.Application", "EmployeeOnboard.Application\EmployeeOnboard.Application.csproj", "{66EC6325-EC0D-4F7F-82E2-D6D1527D38F1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D9742BEC-FD24-4C87-9CCE-DAD1EA763180} = {D9742BEC-FD24-4C87-9CCE-DAD1EA763180}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeOnboard.Domain", "EmployeeOnboard.Domain\EmployeeOnboard.Domain.csproj", "{D9742BEC-FD24-4C87-9CCE-DAD1EA763180}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeOnboard.Infrastructure", "EmployeeOnboard.Infrastructure\EmployeeOnboard.Infrastructure.csproj", "{8572C276-4998-4589-B9F6-AC4F1E4CB514}"
+	ProjectSection(ProjectDependencies) = postProject
+		{66EC6325-EC0D-4F7F-82E2-D6D1527D38F1} = {66EC6325-EC0D-4F7F-82E2-D6D1527D38F1}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeOnboard.Tests", "EmployeeOnboard.Tests\EmployeeOnboard.Tests.csproj", "{ACB16BF7-CA6E-4C28-A296-4FADCC7A8E12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeOnboard.Tests", "EmployeeOnboard.Tests\EmployeeOnboard.Tests.csproj", "{7B7971F6-48A8-45CB-8CBE-946F1AA1711C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{42C5AD4A-86CB-40B5-95FB-6C2C651822D9} = {42C5AD4A-86CB-40B5-95FB-6C2C651822D9}
+		{66EC6325-EC0D-4F7F-82E2-D6D1527D38F1} = {66EC6325-EC0D-4F7F-82E2-D6D1527D38F1}
+		{8572C276-4998-4589-B9F6-AC4F1E4CB514} = {8572C276-4998-4589-B9F6-AC4F1E4CB514}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +50,10 @@ Global
 		{8572C276-4998-4589-B9F6-AC4F1E4CB514}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8572C276-4998-4589-B9F6-AC4F1E4CB514}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8572C276-4998-4589-B9F6-AC4F1E4CB514}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ACB16BF7-CA6E-4C28-A296-4FADCC7A8E12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACB16BF7-CA6E-4C28-A296-4FADCC7A8E12}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACB16BF7-CA6E-4C28-A296-4FADCC7A8E12}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACB16BF7-CA6E-4C28-A296-4FADCC7A8E12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B7971F6-48A8-45CB-8CBE-946F1AA1711C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B7971F6-48A8-45CB-8CBE-946F1AA1711C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B7971F6-48A8-45CB-8CBE-946F1AA1711C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B7971F6-48A8-45CB-8CBE-946F1AA1711C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,10 +7,10 @@ using System.Security.Cryptography;
 using System.Text;
 using EmployeeOnboard.Application.DTOs;
 using EmployeeOnboard.Application.Interfaces;
-using EmployeeOnboard.Infrastructure.Persistence;
 using EmployeeOnboard.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using EmployeeOnboard.Infrastructure.Data;
 
 namespace EmployeeOnboard.Infrastructure.Services
 {
@@ -29,10 +29,10 @@ namespace EmployeeOnboard.Infrastructure.Services
 
         public async Task<AuthResponseDTO> LoginAsync(LoginDTO loginDTO)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDTO.Email);
+            var user = await _context.Employees.FirstOrDefaultAsync(u => u.Email == loginDTO.Email);
             
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.PasswordHash))
+            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.Password))
             {
                 return new AuthResponseDTO
                 {
@@ -46,7 +46,7 @@ namespace EmployeeOnboard.Infrastructure.Services
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
-            _context.Users.Update(user);
+            _context.Employees.Update(user);
             await _context.SaveChangesAsync();
 
             return new AuthResponseDTO
@@ -58,17 +58,17 @@ namespace EmployeeOnboard.Infrastructure.Services
             };
         }
 
-        private string GenerateJwtToken(Users user)
+        private string GenerateJwtToken(Employee employee)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, employee.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, employee.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()) // Ensure this claim exists
+                new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()) // Ensure this claim exists
             };
 
 
