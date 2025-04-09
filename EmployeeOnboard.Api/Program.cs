@@ -29,6 +29,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IResetPasswordService, ResetPasswordService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IResetPasswordRepository, ResetPasswordRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 
 var app = builder.Build();

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace EmployeeOnboard.Application.Interfaces.ServiceInterfaces
 {
-    public interface IEmailService
+    public interface IAuthService
     {
-        Task SendAsync(string to, string subject, string body);
-        Task SendResetPasswordEmail(string toEmail, string resetLink);
+        Task<(bool IsSuccess, string Message)> SendPasswordResetTokenAsync(string email);
     }
 }
