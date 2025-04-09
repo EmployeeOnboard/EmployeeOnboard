@@ -1,35 +1,32 @@
-using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
-using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
-//using EmployeeOnboard.Application.Services;
-using EmployeeOnboard.Infrastructure.Data;
-using EmployeeOnboard.Infrastructure.Repositories;
-using EmployeeOnboard.Infrastructure.Services;
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
+using EmployeeOnboard.Application.Mappings;
 using EmployeeOnboard.Application.Validators;
-using EmployeeOnboard.Application.DTOs;
-
+using EmployeeOnboard.Infrastructure.Data;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore;
+using EmployeeOnboard.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//This line ensures emailtemplate.json is read into IConfiguration
+builder.Configuration.AddJsonFile("EmailTemplates.json", optional: false, reloadOnChange: true);
+
+//Services
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterEmployeeValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddValidatorsFromAssemblyContaining<ResetPasswordDTO>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+//db connection
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
-
-builder.Services.AddScoped<IResetPasswordService, ResetPasswordService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IResetPasswordRepository, ResetPasswordRepository>();
-builder.Services.AddScoped<IEmailService, EmailService>();
 
 
 var app = builder.Build();
@@ -41,8 +38,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); 
 }
 
+app.UseRouting();
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
