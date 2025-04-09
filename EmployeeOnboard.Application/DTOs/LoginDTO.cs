@@ -1,5 +1,4 @@
 ﻿
-
 namespace EmployeeOnboard.Application.DTOs
 {
     public class LoginDTO

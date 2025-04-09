@@ -4,8 +4,6 @@ using Xunit;
 using EmployeeOnboard.Infrastructure.Services;
 using EmployeeOnboard.Infrastructure.Persistence;
 using EmployeeOnboard.Domain.Entities;
-using System;
-using System.Threading.Tasks;
 
 public class LogoutServiceTests
 {
