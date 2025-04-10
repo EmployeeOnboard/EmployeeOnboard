@@ -1,5 +1,5 @@
 ﻿using EmployeeOnboard.Application.DTOs;
-using EmployeeOnboard.Application.Interfaces.Services;
+using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Infrastructure.Services.Notification;
 using Microsoft.AspNetCore.Mvc;
 

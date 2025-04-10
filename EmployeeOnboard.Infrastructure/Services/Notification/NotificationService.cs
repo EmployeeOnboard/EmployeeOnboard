@@ -6,7 +6,6 @@ using System.Net.Mail;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EmployeeOnboard.Application.DTOs;
-using EmployeeOnboard.Application.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using EmployeeOnboard.Infrastructure.Models;

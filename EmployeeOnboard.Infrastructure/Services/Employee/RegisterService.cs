@@ -15,12 +15,16 @@ public class RegisterService : IRegisterService
 {
     private readonly IEmployeeRepository _employeeRepository;
     private readonly ILogger<RegisterService> _logger;
+    private readonly INotificationService _notificationService;
     private readonly IMapper _mapper;
+    private readonly IEmailLogRepository _emailLogRepository;
 
-    public RegisterService(IEmployeeRepository employeeRepository, ILogger<RegisterService> logger, IMapper mapper)
+    public RegisterService(IEmployeeRepository employeeRepository, ILogger<RegisterService> logger, INotificationService notificationService, IEmailLogRepository emailLogRepository, IMapper mapper)
     {
         _employeeRepository = employeeRepository;
         _logger = logger;
+        _notificationService = notificationService;
+        _emailLogRepository = emailLogRepository;
         _mapper = mapper;
     }
 
@@ -74,39 +78,109 @@ public class RegisterService : IRegisterService
         return prefix + shuffledPassword;
     }
 
-    public async Task<(bool IsSuccess, string Message)> RegisterEmployeeAsync(Employee employee)
+    private ValidationResult ValidateEmployee(Employee employee)
     {
         var validator = new RegisterEmployeeValidator();
-
         ValidationResult validationResult = validator.Validate(employee);
 
-        if (!validationResult.IsValid) //validating the input for employee before registering them
-        {
+        if (!validationResult.IsValid)
             _logger.LogWarning("Validation failed for employee registration. Errors: {Errors}", validationResult.ToString());
-            return (false, validationResult.ToString());
-        }
 
-        if (await _employeeRepository.ExistsByEmailAsync(employee.Email))
+        return validationResult;
+    }
+
+    private async Task<bool> EmployeeExistsAsync(string email)
+    {
+        if (await _employeeRepository.ExistsByEmailAsync(email))
         {
-            _logger.LogWarning("Attempt to register employee with existing email: {Email}", employee.Email);
-            return (false, "Email already exists");
+            _logger.LogWarning("Attempt to register employee with existing email: {Email}", email);
+            return true;
         }
 
-        string employeeNumber = Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
+        return false;
+    }
+
+    private string GenerateEmployeeNumber()
+    {
+        return Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
+    }
+
+    private async Task RegisterEmployeeToDatabaseAsync(Employee employee)
+    {
+        _logger.LogInformation("Registering employee. Employee Number: {EmployeeNumber}, Email: {Email}", employee.EmployeeNumber, employee.Email);
+        await _employeeRepository.AddAsync(employee);
+        _logger.LogInformation("Successfully registered employee. Employee ID: {EmployeeId}, Employee Number: {EmployeeNumber}, {Email}",
+                               employee.Id, employee.EmployeeNumber, employee.Email);
+    }
+
+    private async Task<bool> SendWelcomeEmailAsync(Employee employee, string generatedPassword)
+    {
+        try
+        {
+            var emailDto = new EmailRequestDto
+            {
+                To = employee.Email,
+                TemplateKey = "WelcomeEmail",
+                Placeholders = new Dictionary<string, string>
+            {
+                { "FullName", $"{employee.FirstName} {employee.LastName}" },
+                { "EmployeeNumber", employee.EmployeeNumber },
+                { "Password", generatedPassword }
+            }
+            };
+
+            await _notificationService.SendEmailAsync(emailDto);
+            _logger.LogInformation("Welcome email sent to {Email}", employee.Email);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Failed to send email to {Email}. Error: {Message}", employee.Email, ex.Message);
+            await LogEmailFailureAsync(employee, generatedPassword, ex);
+            return false;
+        }
+    }
+
+    private async Task LogEmailFailureAsync(Employee employee, string generatedPassword, Exception ex)
+    {
+        var log = new EmailLog
+        {
+            RecipientEmail = employee.Email,
+            Subject = "Welcome to the Team!",
+            Body = $"Employee Number: {employee.EmployeeNumber}, Password: {generatedPassword}",
+            IsSuccess = false,
+            ErrorMessage = ex.Message
+        };
+
+        await _emailLogRepository.LogEmailAsync(log);
+    }
+
+    public async Task<(bool IsSuccess, string Message)> RegisterEmployeeAsync(Employee employee)
+    {
+        var validationResult = ValidateEmployee(employee);
+
+        if (!validationResult.IsValid)
+            return (false, validationResult.ToString());
+
+        if (await EmployeeExistsAsync(employee.Email))
+            return (false, "Email already exists");
+
+
+        string employeeNumber = GenerateEmployeeNumber();
 
         string generatedPassword = GenerateRandomPassword(12);
 
-        //var employee = _mapper.Map<Employee>(request);
         employee.EmployeeNumber = employeeNumber;
         employee.Password = BCrypt.Net.BCrypt.HashPassword(generatedPassword);
 
+        await RegisterEmployeeToDatabaseAsync(employee);
 
-        _logger.LogInformation("Registering employee. Employee Number: {EmployeeNumber}, Email: {Email}", employee.EmployeeNumber, employee.Email);
+        var emailSuccess = await SendWelcomeEmailAsync(employee, generatedPassword);
 
-        await _employeeRepository.AddAsync(employee);
-
-        _logger.LogInformation("Successfully registered employee. Employee ID: {EmployeeId}, Employee Number: {EmployeeNumber}, {Email}",
-                           employee.Id, employee.EmployeeNumber, employee.Email);
+        if (!emailSuccess)
+        {
+            return (false, "Failed to send welcome email");
+        }
 
         return (true, $"Employee registered successfully. Employee Number: {employeeNumber}, Password: {generatedPassword}");
     }

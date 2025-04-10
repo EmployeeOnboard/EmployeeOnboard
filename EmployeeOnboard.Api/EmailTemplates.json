@@ -1,9 +1,9 @@
 ﻿{
     "EmailTemplates": {
-        "WelcomeEmail": {
-            "Subject": "Welcome to {CompanyName}!",
-            "Body": "<html><body><h3>Hello {UserName},</h3> <p>Welcome to {CompanyName}! We are excited to have you.</p> <p>Regards, <br>{AdminName}</p></body></html>"
-        },
+      "WelcomeEmail": {
+        "Subject": "Welcome to the Company, {{FullName}}!",
+        "Body": "<p>Hello {{FullName}},</p><p>Your account has been created.</p><p><strong>Employee Number:</strong> {{EmployeeNumber}}</p><p><strong>Password:</strong> {{Password}}</p><p>You can now log in using your email: {{Email}}</p>"
+      },
 
         "PasswordReset": {
             "Subject": "Reset Your Password",

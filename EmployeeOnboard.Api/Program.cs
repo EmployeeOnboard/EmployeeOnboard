@@ -12,6 +12,8 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using EmployeeOnboard.Infrastructure;
+using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
+using EmployeeOnboard.Infrastructure.Services;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
