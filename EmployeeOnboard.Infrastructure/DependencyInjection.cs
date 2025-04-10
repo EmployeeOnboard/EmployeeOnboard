@@ -1,4 +1,5 @@
-﻿using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
+﻿using EmployeeOnboard.Application.Interfaces;
+using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Infrastructure.Repositories;
 using EmployeeOnboard.Infrastructure.Services;
@@ -16,6 +17,10 @@ namespace EmployeeOnboard.Infrastructure
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IRegisterService, RegisterService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, LoginService>();
+            services.AddScoped<ILogoutService, LogoutService>();
+
+            // Register EmailTemplateService
             services.AddScoped<EmailTemplateService>();
 
             //services.AddHostedService<BackgroundEmailRetryWorker>();
