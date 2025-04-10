@@ -1,4 +1,4 @@
-﻿
+﻿ 
 namespace EmployeeOnboard.Application.DTOs
 { 
     public class ResetPasswordDTO
