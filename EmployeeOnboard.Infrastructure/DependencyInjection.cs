@@ -1,6 +1,5 @@
 ﻿using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
-using EmployeeOnboard.Application.Interfaces.Services;
 using EmployeeOnboard.Infrastructure.Repositories;
 using EmployeeOnboard.Infrastructure.Services;
 using EmployeeOnboard.Infrastructure.Services.Notification;
@@ -17,14 +16,15 @@ namespace EmployeeOnboard.Infrastructure
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IRegisterService, RegisterService>();
             services.AddScoped<IUserService, UserService>();
-
-            // Register EmailTemplateService
             services.AddScoped<EmailTemplateService>();
 
-            //Register Repositories 
+            //services.AddHostedService<BackgroundEmailRetryWorker>();
+            //services.AddScoped<EmailRetryService>();
+
 
             //register repositories
-           services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+           services.AddScoped<IEmailLogRepository, EmailLogRepository>();
 
             // Register SmtpClientWrapper for dependency injection
             services.AddTransient<ISmtpClientWrapper>(provider =>
@@ -44,19 +44,6 @@ namespace EmployeeOnboard.Infrastructure
         }
     }
 }
-    //public static class DependencyInjection
-    //{
-    //    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
-    //    {
-    //        services.AddScoped<INotificationService, NotificationService>();
-
-    //        //Register EmailTemplateService
-    //        services.AddScoped<EmailTemplateService>();
-
-    //        return services;
-    //    }
-
-    //}
 
 
 
