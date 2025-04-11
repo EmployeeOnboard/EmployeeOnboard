@@ -13,9 +13,9 @@ namespace EmployeeOnboard.Application.Validators
         
         public ResetPasswordDTOValidator()
         {
-            RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Email is required.")
-                .EmailAddress().WithMessage("Invalid email format.");
+            //RuleFor(x => x.Email)
+            //    .NotEmpty().WithMessage("Email is required.")
+            //    .EmailAddress().WithMessage("Invalid email format.");
 
            RuleFor(x => x.CurrentPassword )
                 .NotEmpty().WithMessage("Current password is required.");
