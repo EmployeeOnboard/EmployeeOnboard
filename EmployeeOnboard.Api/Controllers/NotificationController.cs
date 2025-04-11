@@ -18,7 +18,7 @@ namespace EmployeeOnboard.Api.Controllers
 
         [HttpPost("send-email")]
         public async Task<IActionResult> SendEmail([FromBody] EmailRequestDto request)
-        {
+        {           
             try
             {
                 await _notificationService.SendEmailAsync(request);
