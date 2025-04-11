@@ -19,7 +19,7 @@ public class UserService : IUserService
         _mapper = mapper;
     }
 
-    public async Task<bool> DisableEmployeeAsync(string employeeNumber)
+    public async Task<bool> DisableEmployeeAsync(string employeeNumber)  
     {
         var employee = await _employeeRepository.GetByEmployeeNumberAsync(employeeNumber);
 

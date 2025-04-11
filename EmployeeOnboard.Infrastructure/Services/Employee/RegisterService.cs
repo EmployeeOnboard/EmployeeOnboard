@@ -7,8 +7,7 @@ using EmployeeOnboard.Domain.Entities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
-using System.Text;
-
+using System.Text;               
 namespace EmployeeOnboard.Infrastructure.Services;
 
 public class RegisterService : IRegisterService
