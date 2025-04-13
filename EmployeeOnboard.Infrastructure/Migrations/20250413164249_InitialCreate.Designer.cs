@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeOnboard.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250409122015_MigrationTables")]
-    partial class MigrationTables
+    [Migration("20250413164249_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,38 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("EmployeeOnboard.Domain.Entities.EmailLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSuccess")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RecipientEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailLogs");
+                });
 
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.Employee", b =>
                 {
@@ -88,24 +120,6 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Employees");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("e7d93a90-78e4-4b0f-bc93-1f78b91d6a52"),
-                            Address = "",
-                            CreatedAt = new DateTime(2025, 3, 27, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "superadmin@company.com",
-                            EmployeeNumber = "SUPERADMIN01",
-                            FirstName = "Super",
-                            IsPasswordChanged = false,
-                            LastName = "Admin",
-                            MiddleName = "",
-                            Password = "$2a$11$Hj2Qj7fPKfTrRUzWYV9nNuec7Yl3xjlJYoE7O7E8R0gGJ9B6xNG1q",
-                            PhoneNumber = "",
-                            Role = "SuperAdmin",
-                            Status = 0
-                        });
                 });
 
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.EmployeeRole", b =>

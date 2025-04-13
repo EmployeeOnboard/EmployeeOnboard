@@ -6,11 +6,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EmployeeOnboard.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationTables : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "EmailLogs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RecipientEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsSuccess = table.Column<bool>(type: "bit", nullable: false),
+                    ErrorMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailLogs", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Employees",
                 columns: table => new
@@ -73,11 +90,6 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Employees",
-                columns: new[] { "Id", "Address", "CreatedAt", "Email", "EmployeeNumber", "FirstName", "IsPasswordChanged", "LastName", "MiddleName", "Password", "PhoneNumber", "RefreshToken", "RefreshTokenExpiryTime", "Role", "Status" },
-                values: new object[] { new Guid("e7d93a90-78e4-4b0f-bc93-1f78b91d6a52"), "", new DateTime(2025, 3, 27, 0, 0, 0, 0, DateTimeKind.Utc), "superadmin@company.com", "SUPERADMIN01", "Super", false, "Admin", "", "$2a$11$Hj2Qj7fPKfTrRUzWYV9nNuec7Yl3xjlJYoE7O7E8R0gGJ9B6xNG1q", "", null, null, "SuperAdmin", 0 });
-
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeeRoles_RoleId",
                 table: "EmployeeRoles",
@@ -99,6 +111,9 @@ namespace EmployeeOnboard.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "EmailLogs");
+
             migrationBuilder.DropTable(
                 name: "EmployeeRoles");
 

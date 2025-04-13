@@ -1,6 +1,19 @@
 @EmployeeOnboard.Api_HostAddress = http://localhost:5141
 
-GET {{EmployeeOnboard.Api_HostAddress}}/weatherforecast/
-Accept: application/json
 
-###
+### Register a new employee
+POST {{EmployeeOnboard.Api_HostAddress}}/api/account/register
+Content-Type: application/json
+
+{ 
+  "firstName": "David",
+  "middleName": "",
+  "lastName": "Mwangi",
+  "phoneNumber": "254765656565",
+  "email": "davidmuchiri021@gmail.com",
+  "address": "4000 mombasa",
+  "role": "Developer"
+}
+
+### Disable Employee by Employee Number
+PUT {{EmployeeOnboard.Api_HostAddress}}/api/employee/disable/C110C4C7

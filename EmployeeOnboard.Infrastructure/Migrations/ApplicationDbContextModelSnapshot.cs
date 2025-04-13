@@ -117,24 +117,6 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Employees");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("e7d93a90-78e4-4b0f-bc93-1f78b91d6a52"),
-                            Address = "",
-                            CreatedAt = new DateTime(2025, 3, 27, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "superadmin@company.com",
-                            EmployeeNumber = "SUPERADMIN01",
-                            FirstName = "Super",
-                            IsPasswordChanged = false,
-                            LastName = "Admin",
-                            MiddleName = "",
-                            Password = "$2a$11$Hj2Qj7fPKfTrRUzWYV9nNuec7Yl3xjlJYoE7O7E8R0gGJ9B6xNG1q",
-                            PhoneNumber = "",
-                            Role = "SuperAdmin",
-                            Status = 0
-                        });
                 });
 
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.EmployeeRole", b =>

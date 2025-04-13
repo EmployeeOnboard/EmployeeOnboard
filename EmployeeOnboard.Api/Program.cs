@@ -1,20 +1,15 @@
-using EmployeeOnboard.Application.Interfaces;
-using EmployeeOnboard.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
 using EmployeeOnboard.Application.Mappings;
 using EmployeeOnboard.Application.Validators;
 using EmployeeOnboard.Infrastructure.Data;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.EntityFrameworkCore;
 using EmployeeOnboard.Infrastructure;
-using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
-using EmployeeOnboard.Infrastructure.Services;
 using Microsoft.OpenApi.Models;
+using EmployeeOnboard.Infrastructure.Services.Initilization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -100,6 +95,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope()) // as soon as the app starts, it checks the db and if the superadmin isn't present, it creates one automatically
+{
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+    await dbInitializer.SeedSuperAdminAsync();
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -3,6 +3,7 @@ using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Infrastructure.Repositories;
 using EmployeeOnboard.Infrastructure.Services;
+using EmployeeOnboard.Infrastructure.Services.Initilization;
 using EmployeeOnboard.Infrastructure.Services.Notification;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,11 @@ namespace EmployeeOnboard.Infrastructure
 
             //register repositories
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-           services.AddScoped<IEmailLogRepository, EmailLogRepository>();
+            services.AddScoped<IEmailLogRepository, EmailLogRepository>();
+
+            // register the initializer class
+            services.AddScoped<DbInitializer>();
+
 
             // Register SmtpClientWrapper for dependency injection
             services.AddTransient<ISmtpClientWrapper>(provider =>
