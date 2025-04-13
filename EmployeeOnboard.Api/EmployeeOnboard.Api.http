@@ -15,5 +15,27 @@ Content-Type: application/json
   "role": "Developer"
 }
 
+###
+
 ### Disable Employee by Employee Number
-PUT {{EmployeeOnboard.Api_HostAddress}}/api/employee/disable/C110C4C7
+PUT {{EmployeeOnboard.Api_HostAddress}}/api/employee/disable/E2E4E106
+
+###
+
+### Enable Employee
+PUT {{EmployeeOnboard.Api_HostAddress}}/api/employee/enable/E2E4E106
+
+###
+
+### Get Employee by Employee Number
+GET {{EmployeeOnboard.Api_HostAddress}}/api/employee/get-employee/E2E4E106
+
+###
+
+### Get All Active Employees
+GET {{EmployeeOnboard.Api_HostAddress}}/api/employee/active
+
+###
+
+### Get Employee by Email
+GET {{EmployeeOnboard.Api_HostAddress}}/api/employee/email?email=mercythuo17@gmail.com
