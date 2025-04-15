@@ -11,6 +11,7 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<Employee> Employees { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<EmployeeRole> EmployeeRoles { get; set; }
 
@@ -20,8 +21,9 @@ public class ApplicationDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
         modelBuilder.Entity<Employee>()
-       .HasIndex(e => e.EmployeeNumber)
-       .IsUnique();  // this makes sure that the employee number generated is unique for every employee. 
+           .Ignore(e => e.RefreshToken)
+           .HasIndex(e => e.EmployeeNumber)
+           .IsUnique();  // this makes sure that the employee number generated is unique for every employee. 
 
 
        //used a hardcoded guid to prevent ef core from assuming that the model has changed

@@ -4,6 +4,7 @@ using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Application.Interfaces.Services;
 using EmployeeOnboard.Infrastructure.Repositories;
 using EmployeeOnboard.Infrastructure.Services;
+using EmployeeOnboard.Infrastructure.Services.Employees;
 using EmployeeOnboard.Infrastructure.Services.Notification;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

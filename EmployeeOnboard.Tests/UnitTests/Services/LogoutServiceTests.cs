@@ -1,9 +1,9 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Xunit;
-using EmployeeOnboard.Infrastructure.Services;
 using EmployeeOnboard.Domain.Entities;
 using EmployeeOnboard.Infrastructure.Data;
+using EmployeeOnboard.Infrastructure.Services.Employees;
 
 public class LogoutServiceTests
 {
@@ -25,7 +25,17 @@ public class LogoutServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var user = new Employee { Id = userId, RefreshToken = "some_token" };
+        var user = new Employee
+        {
+            Id = userId,
+            RefreshToken = new RefreshToken
+            {
+                Token = "some_token",
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                EmployeeId = userId
+            }
+        };
+
         _context.Employees.Add(user);
         await _context.SaveChangesAsync();
 

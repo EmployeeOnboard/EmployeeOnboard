@@ -1,10 +1,12 @@
-﻿using EmployeeOnboard.Application.Interfaces;
+﻿
+
+using EmployeeOnboard.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using EmployeeOnboard.Infrastructure.Data;
 using EmployeeOnboard.Domain.Entities;
 
 
-namespace EmployeeOnboard.Infrastructure.Services
+namespace EmployeeOnboard.Infrastructure.Services.Employees
 {
     public class LogoutService : ILogoutService
     {
@@ -21,10 +23,20 @@ namespace EmployeeOnboard.Infrastructure.Services
 
             if (user == null) return false;
 
-            user.RefreshToken = null; // Invalidate the refresh token
+            // Find the refresh token associated with the user
+            var refreshTokens = await _context.RefreshTokens
+                .Where(rt => rt.EmployeeId == user.Id)
+                .ToListAsync();
 
-            await _context.SaveChangesAsync();
+            if (refreshTokens.Any())
+            {
+                _context.RefreshTokens.RemoveRange(refreshTokens);
+                await _context.SaveChangesAsync();
+            }
+
+
             return true;
         }
+
     }
 }

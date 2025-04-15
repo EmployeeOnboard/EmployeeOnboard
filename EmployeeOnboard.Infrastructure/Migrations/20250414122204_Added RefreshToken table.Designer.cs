@@ -4,6 +4,7 @@ using EmployeeOnboard.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeOnboard.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414122204_Added RefreshToken table")]
+    partial class AddedRefreshTokentable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,7 +117,28 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     b.ToTable("EmployeeRoles");
                 });
 
-            modelBuilder.Entity("EmployeeOnboard.Domain.Entities.RefreshToken", b =>
+            modelBuilder.Entity("EmployeeOnboard.Domain.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -137,27 +161,6 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("EmployeeOnboard.Domain.Entities.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Roles");
-                });
-
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.EmployeeRole", b =>
                 {
                     b.HasOne("EmployeeOnboard.Domain.Entities.Employee", "employee")
@@ -177,7 +180,7 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     b.Navigation("role");
                 });
 
-            modelBuilder.Entity("EmployeeOnboard.Domain.Entities.RefreshToken", b =>
+            modelBuilder.Entity("RefreshToken", b =>
                 {
                     b.HasOne("EmployeeOnboard.Domain.Entities.Employee", "Employee")
                         .WithMany()

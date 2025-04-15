@@ -5,7 +5,11 @@ using Xunit;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using EmployeeOnboard.Api.Controllers.AuthController;
+using EmployeeOnboard.Api.Controllers;
+using AutoMapper;
+using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
+using Microsoft.Extensions.Logging;
+
 
 
 
@@ -15,17 +19,30 @@ namespace EmployeeOnboard.Tests.Services
     {
         private readonly Mock<IAuthService> _mockAuthService;
         private readonly Mock<ILogoutService> _mockLogoutService;
-        private readonly AuthController _controller;
+        private readonly AccountsController _controller;
+        private readonly IMapper _mapper;
 
         public AuthControllerTests()
         {
             // Mocking the services
             _mockAuthService = new Mock<IAuthService>();
             _mockLogoutService = new Mock<ILogoutService>();
+            _mapper = new Mock<IMapper>().Object;  // Fix here: using .Object to get the IMapper instance
+
+            var mockRegisterService = new Mock<IRegisterService>();
+            var mockLogger = new Mock<ILogger<AccountsController>>();
 
             // Creating the controller instance
-            _controller = new AuthController(_mockAuthService.Object, _mockLogoutService.Object);
+            _controller = new AccountsController(
+                mockRegisterService.Object,
+                mockLogger.Object,
+                _mapper,  // Now passing the correct IMapper object
+                _mockAuthService.Object,
+                _mockLogoutService.Object
+            );
         }
+
+
 
         [Fact]
         public async Task Login_ValidCredentials_ReturnsOkResult()
