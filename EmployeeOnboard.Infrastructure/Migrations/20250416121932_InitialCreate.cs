@@ -21,7 +21,9 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsSuccess = table.Column<bool>(type: "bit", nullable: false),
                     ErrorMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastRetriedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TemplateKey = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

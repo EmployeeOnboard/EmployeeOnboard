@@ -14,11 +14,17 @@ namespace EmployeeOnboard.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<EmailLog>> GetFailedEmailLogsAsync(CancellationToken cancellationToken)
+        public async Task<EmailLog?> GetByRecipientEmailAsync(string email)
+        {
+            return await _context.EmailLogs.FirstOrDefaultAsync(e => e.RecipientEmail == email);
+        }
+
+        public async Task<List<EmailLog>> GetFailedEmailsAsync()
         {
             return await _context.EmailLogs
                 .Where(e => !e.IsSuccess)
-                .ToListAsync(cancellationToken);
+                .OrderByDescending(e => e.SentAt)
+                .ToListAsync();
         }
 
         public async Task LogEmailAsync(EmailLog log, CancellationToken cancellationToken = default)
@@ -27,10 +33,10 @@ namespace EmployeeOnboard.Infrastructure.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task UpdateAsync(EmailLog log, CancellationToken cancellationToken)
+        public async Task UpdateAsync(EmailLog log)
         {
             _context.EmailLogs.Update(log);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync();
         }
     }
 }

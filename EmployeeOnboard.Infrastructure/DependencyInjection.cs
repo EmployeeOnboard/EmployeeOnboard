@@ -20,13 +20,9 @@ namespace EmployeeOnboard.Infrastructure
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, LoginService>();
             services.AddScoped<ILogoutService, LogoutService>();
-
-            // Register EmailTemplateService
             services.AddScoped<EmailTemplateService>();
-
-            //services.AddHostedService<BackgroundEmailRetryWorker>();
-            //services.AddScoped<EmailRetryService>();
-
+            services.AddScoped<IEmailRetryService, EmailRetryService>();
+            services.AddScoped<IEmailLogQueryService, EmailLogQueryService>();
 
             //register repositories
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();

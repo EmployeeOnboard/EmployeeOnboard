@@ -6,11 +6,11 @@ POST {{EmployeeOnboard.Api_HostAddress}}/api/account/register
 Content-Type: application/json
 
 { 
-  "firstName": "David",
+  "firstName": "Elvis",
   "middleName": "",
-  "lastName": "Mwangi",
-  "phoneNumber": "254765656565",
-  "email": "davidmuchiri021@gmail.com",
+  "lastName": "O",
+  "phoneNumber": "254735765565",
+  "email": "santaemmanuel2018@gmail.com",
   "address": "4000 mombasa",
   "role": "Developer"
 }

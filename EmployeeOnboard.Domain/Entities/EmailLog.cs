@@ -10,5 +10,7 @@ namespace EmployeeOnboard.Domain.Entities
         public bool IsSuccess { get; set; }
         public string? ErrorMessage { get; set; }
         public DateTime SentAt { get; set; } = DateTime.UtcNow;
+        public DateTime LastRetriedAt {  get; set; } 
+        public string? TemplateKey { get; set; }
     }
 }

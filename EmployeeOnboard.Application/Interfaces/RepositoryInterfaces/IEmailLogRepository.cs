@@ -4,9 +4,10 @@ namespace EmployeeOnboard.Application.Interfaces.RepositoryInterfaces
 {
     public interface IEmailLogRepository
     {
+        Task<EmailLog?> GetByRecipientEmailAsync(string email);
+        Task<List<EmailLog>> GetFailedEmailsAsync();
         Task LogEmailAsync(EmailLog log, CancellationToken cancellationToken = default);
-        Task<List<EmailLog>> GetFailedEmailLogsAsync(CancellationToken cancellationToken);
-        Task UpdateAsync(EmailLog log, CancellationToken cancellationToken);
+        Task UpdateAsync(EmailLog log);
 
     }
 }

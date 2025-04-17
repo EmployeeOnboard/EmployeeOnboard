@@ -38,6 +38,9 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     b.Property<bool>("IsSuccess")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("LastRetriedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("RecipientEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -47,6 +50,9 @@ namespace EmployeeOnboard.Infrastructure.Migrations
 
                     b.Property<string>("Subject")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TemplateKey")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

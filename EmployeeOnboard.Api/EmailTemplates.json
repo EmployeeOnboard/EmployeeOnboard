@@ -1,8 +1,8 @@
 ﻿{
     "EmailTemplates": {
       "WelcomeEmail": {
-        "Subject": "Welcome to the Company, {{FullName}}!",
-        "Body": "<p>Hello {{FullName}},</p><p>Your account has been created.</p><p><strong>Employee Number:</strong> {{EmployeeNumber}}</p><p><strong>Password:</strong> {{Password}}</p><p>You can now log in using your email: {{Email}}</p>"
+        "Subject": "Welcome to the Company, {FullName}!",
+        "Body": "<p>Hello {FullName},</p><p>Your account has been created.</p><p><strong>Employee Number:</strong> {EmployeeNumber}</p><p><strong>Password:</strong> {Password}</p><p>You can now log in using your email</p>"
       },
 
         "PasswordReset": {
