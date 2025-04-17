@@ -20,6 +20,7 @@ namespace EmployeeOnboard.Infrastructure
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, LoginService>();
             services.AddScoped<ILogoutService, LogoutService>();
+            services.AddScoped<IUpdateProfileService, UpdateProfileService>();
 
             // Register EmailTemplateService
             services.AddScoped<EmailTemplateService>();
