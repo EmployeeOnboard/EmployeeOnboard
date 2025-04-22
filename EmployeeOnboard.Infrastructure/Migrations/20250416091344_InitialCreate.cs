@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EmployeeOnboard.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationTables : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,6 +22,8 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AltPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProfileImgUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsPasswordChanged = table.Column<bool>(type: "bit", nullable: false),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -75,8 +77,8 @@ namespace EmployeeOnboard.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Employees",
-                columns: new[] { "Id", "Address", "CreatedAt", "Email", "EmployeeNumber", "FirstName", "IsPasswordChanged", "LastName", "MiddleName", "Password", "PhoneNumber", "RefreshToken", "RefreshTokenExpiryTime", "Role", "Status" },
-                values: new object[] { new Guid("e7d93a90-78e4-4b0f-bc93-1f78b91d6a52"), "", new DateTime(2025, 3, 27, 0, 0, 0, 0, DateTimeKind.Utc), "superadmin@company.com", "SUPERADMIN01", "Super", false, "Admin", "", "$2a$11$Hj2Qj7fPKfTrRUzWYV9nNuec7Yl3xjlJYoE7O7E8R0gGJ9B6xNG1q", "", null, null, "SuperAdmin", 0 });
+                columns: new[] { "Id", "Address", "AltPhoneNumber", "CreatedAt", "Email", "EmployeeNumber", "FirstName", "IsPasswordChanged", "LastName", "MiddleName", "Password", "PhoneNumber", "ProfileImgUrl", "RefreshToken", "RefreshTokenExpiryTime", "Role", "Status" },
+                values: new object[] { new Guid("e7d93a90-78e4-4b0f-bc93-1f78b91d6a52"), "", "", new DateTime(2025, 3, 27, 0, 0, 0, 0, DateTimeKind.Utc), "superadmin@company.com", "SUPERADMIN01", "Super", false, "Admin", "", "$2a$11$Hj2Qj7fPKfTrRUzWYV9nNuec7Yl3xjlJYoE7O7E8R0gGJ9B6xNG1q", "", null, null, null, "SuperAdmin", 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeeRoles_RoleId",

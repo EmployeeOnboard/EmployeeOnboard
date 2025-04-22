@@ -2,9 +2,11 @@
 using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Application.Interfaces.Services;
+using EmployeeOnboard.Application.Interfaces.UOW;
 using EmployeeOnboard.Infrastructure.Repositories;
 using EmployeeOnboard.Infrastructure.Services;
 using EmployeeOnboard.Infrastructure.Services.Notification;
+using EmployeeOnboard.Infrastructure.UOW;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +22,9 @@ namespace EmployeeOnboard.Infrastructure
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, LoginService>();
             services.AddScoped<ILogoutService, LogoutService>();
+            services.AddScoped<IUpdateProfileService, UpdateProfileService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
             // Register EmailTemplateService
             services.AddScoped<EmailTemplateService>();

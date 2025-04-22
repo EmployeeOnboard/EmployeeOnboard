@@ -32,6 +32,10 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("AltPhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -66,6 +70,9 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ProfileImgUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 
@@ -91,6 +98,7 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                         {
                             Id = new Guid("e7d93a90-78e4-4b0f-bc93-1f78b91d6a52"),
                             Address = "",
+                            AltPhoneNumber = "",
                             CreatedAt = new DateTime(2025, 3, 27, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "superadmin@company.com",
                             EmployeeNumber = "SUPERADMIN01",
