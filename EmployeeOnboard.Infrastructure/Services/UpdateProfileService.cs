@@ -2,6 +2,9 @@
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
 using Microsoft.Extensions.Logging;
+using EmployeeOnboard.Application.Interfaces.UOW;
+using EmployeeOnboard.Infrastructure.UOW;
+using EmployeeOnboard.Infrastructure.Repositories;
 
 
 namespace EmployeeOnboard.Infrastructure.Services
@@ -9,20 +12,20 @@ namespace EmployeeOnboard.Infrastructure.Services
     public class UpdateProfileService : IUpdateProfileService
     {
         private readonly ILogger<UpdateProfileService> _logger;
-        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
         public UpdateProfileService(
             ILogger<UpdateProfileService> logger,
-            IEmployeeRepository employeeRepository)
+            IUnitOfWork unitOfWork)
         {
             _logger = logger;
-            _employeeRepository = employeeRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task <string> UpdateProfileAsync(UpdateProfileDTO dto, string userId, string role)
         {
             //retrieve the user
-            var user = await _employeeRepository.GetByEmailAsync(userId);
+            var user = await _unitOfWork.Employee.GetByEmailAsync(userId);
             if (user == null)
             {
                 _logger.LogWarning($"User with Email {userId} not found");
@@ -51,11 +54,14 @@ namespace EmployeeOnboard.Infrastructure.Services
             }
 
             //save changes 
-            await _employeeRepository.UpdateAsync(user);
+            var rowsAffected = await _unitOfWork.SaveChangesAsync();
 
             //return success message 
-            return "Profile updated successfully";
+            if (rowsAffected > 0)
 
+                return /*Result.Success*/("Profile updated successfully.");
+
+            return /*Result.Failure*/("No changes were saved.");
         }
 
     }
