@@ -77,7 +77,7 @@ public class RegisterService : IRegisterService
 
         return prefix + shuffledPassword;
     }
-
+    
     private ValidationResult ValidateEmployee(Employee employee)
     {
         var validator = new RegisterEmployeeValidator();

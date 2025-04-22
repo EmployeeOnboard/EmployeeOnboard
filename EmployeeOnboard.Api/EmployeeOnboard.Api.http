@@ -39,3 +39,22 @@ GET {{EmployeeOnboard.Api_HostAddress}}/api/employee/active
 
 ### Get Employee by Email
 GET {{EmployeeOnboard.Api_HostAddress}}/api/employee/email?email=mercythuo17@gmail.com
+
+###
+
+### Get Failed Emails
+GET https://localhost:7203/api/notification/failed
+Accept: application/json
+
+###
+
+### Retry Selected Emails
+POST https://localhost:7203/api/notification/retry-selected
+Content-Type: application/json
+Accept: application/json
+
+[
+  "user1@example.com",
+  "user2@example.com"
+]
+
