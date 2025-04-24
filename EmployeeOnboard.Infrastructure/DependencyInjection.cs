@@ -27,7 +27,6 @@ namespace EmployeeOnboard.Infrastructure
             services.AddScoped<IUpdateProfileService, UpdateProfileService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IChangePassword, ChangePasswordService>();
-            services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>();
             services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
             services.AddScoped<IForgotPasswordTokenRepository, ForgotPasswordTokenRepository>();
 

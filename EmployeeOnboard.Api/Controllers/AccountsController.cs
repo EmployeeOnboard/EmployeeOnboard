@@ -58,9 +58,6 @@ namespace EmployeeOnboard.Api.Controllers
             }
         }
 
-            return Ok(new { success = true, message = result.Message });
-        }
-
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
         {

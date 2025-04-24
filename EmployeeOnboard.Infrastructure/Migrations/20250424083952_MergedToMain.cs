@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EmployeeOnboard.Infrastructure.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:EmployeeOnboard.Infrastructure/Migrations/20250423095635_AddedForgotPasswordToken.cs
-    public partial class AddedForgotPasswordToken : Migration
-========
-    public partial class initialcreate : Migration
->>>>>>>> e4a67a8602615197ba6c215ac9a0a57bc3144387:EmployeeOnboard.Infrastructure/Migrations/20250424072854_initialcreate.cs
+    public partial class MergedToMain : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,12 +44,8 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     AltPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfileImgUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-<<<<<<<< HEAD:EmployeeOnboard.Infrastructure/Migrations/20250423095635_AddedForgotPasswordToken.cs
-                    IsPasswordChanged = table.Column<bool>(type: "bit", nullable: false),
-========
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
->>>>>>>> e4a67a8602615197ba6c215ac9a0a57bc3144387:EmployeeOnboard.Infrastructure/Migrations/20250424072854_initialcreate.cs
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -121,14 +113,6 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-<<<<<<<< HEAD:EmployeeOnboard.Infrastructure/Migrations/20250423095635_AddedForgotPasswordToken.cs
-            migrationBuilder.InsertData(
-                table: "Employees",
-                columns: new[] { "Id", "Address", "CreatedAt", "Email", "EmployeeNumber", "FirstName", "IsPasswordChanged", "LastName", "MiddleName", "Password", "PhoneNumber", "Role", "Status" },
-                values: new object[] { new Guid("e7d93a90-78e4-4b0f-bc93-1f78b91d6a52"), "", new DateTime(2025, 3, 27, 0, 0, 0, 0, DateTimeKind.Utc), "superadmin@company.com", "SUPERADMIN01", "Super", false, "Admin", "", "$2a$11$Hj2Qj7fPKfTrRUzWYV9nNuec7Yl3xjlJYoE7O7E8R0gGJ9B6xNG1q", "", "SuperAdmin", 0 });
-
-========
->>>>>>>> e4a67a8602615197ba6c215ac9a0a57bc3144387:EmployeeOnboard.Infrastructure/Migrations/20250424072854_initialcreate.cs
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeeRoles_RoleId",
                 table: "EmployeeRoles",

@@ -105,8 +105,6 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
-=======
                     b.Property<string>("ProfileImgUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -116,7 +114,6 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     b.Property<DateTime?>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");
 
->>>>>>> e4a67a8602615197ba6c215ac9a0a57bc3144387
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

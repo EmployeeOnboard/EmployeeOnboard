@@ -58,7 +58,7 @@ public class RegisterService : IRegisterService
         return (true, $"Employee registered successfully. Employee Number: {employeeNumber}, Password: {generatedPassword}");
     }
 
-    private string GenerateRandomPassword(int length = 12)
+    private string GenerateRandomPassword(int length = 12) 
     {
         const string upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         const string lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";

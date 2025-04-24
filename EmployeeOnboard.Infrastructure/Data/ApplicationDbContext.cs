@@ -33,6 +33,6 @@ public class ApplicationDbContext : DbContext
        .WithOne(t => t.Employee)
        .HasForeignKey<ForgotPasswordToken>(t => t.EmployeeId);
 
-        
 
+    }
 }
