@@ -6,6 +6,7 @@ using EmployeeOnboard.Domain.Entities;
 using EmployeeOnboard.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Authentication;
 using System.Security.Claims;
 
 namespace EmployeeOnboard.Api.Controllers
@@ -45,35 +46,72 @@ namespace EmployeeOnboard.Api.Controllers
             return Ok(new { success = true, message = result.Message });
         }
 
+        //[HttpPost]
+        //[Route("auth/token")]
+        //public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
+        //{
+        //    var response = await _authService.LoginAsync(loginDTO);
+        //    if (!response.Success)
+        //    {
+        //        return Unauthorized(response);
+        //    }
+        //    return Ok(response);
+        //}
+
+
         [HttpPost]
         [Route("auth/token")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
         {
-            var response = await _authService.LoginAsync(loginDTO);
-            if (!response.Success)
+            try
             {
-                return Unauthorized(response);
+                var response = await _authService.LoginAsync(loginDTO);
+                return Ok(response); // Return successful response
             }
-            return Ok(response);
+            catch (AuthenticationException ex)
+            {
+                return Unauthorized(new { message = ex.Message }); // Handle authentication failure
+            }
+            catch (Exception ex)
+            {
+                // Log the exception here if needed
+                return StatusCode(500, new { message = "An unexpected error occurred.", error = ex.Message });
+            }
         }
+
+
+        //[HttpPost]
+        //[Route("logout")]
+        //public async Task<IActionResult> Logout()
+        //{
+        //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        //    if (string.IsNullOrEmpty(userIdClaim))
+        //        return Unauthorized("Invalid user");
+
+        //    if (!Guid.TryParse(userIdClaim, out var userId))
+        //        return BadRequest("Invalid user ID format");
+
+        //    var result = await _logoutService.LogoutAsync(userId);
+
+        //    if (!result) return BadRequest("Logout failed");
+
+        //    return Ok("Logged out successfully");
+        //}
 
         [HttpPost]
         [Route("logout")]
         public async Task<IActionResult> Logout()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var (success, message) = await _logoutService.LogoutAsync(User);
 
-            if (string.IsNullOrEmpty(userIdClaim))
-                return Unauthorized("Invalid user");
+            if (!success)
+            {
+                return BadRequest(message);
+            }
 
-            if (!Guid.TryParse(userIdClaim, out var userId))
-                return BadRequest("Invalid user ID format");
-
-            var result = await _logoutService.LogoutAsync(userId);
-
-            if (!result) return BadRequest("Logout failed");
-
-            return Ok("Logged out successfully");
+            return Ok(message);
         }
+
     }
 }
