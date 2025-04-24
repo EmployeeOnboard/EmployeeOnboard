@@ -15,10 +15,10 @@ public class EmailLogRepositoryTest
     public EmailLogRepositoryTest()
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // so here this the Inmemory db is a stub for dbcontext.
             .Options;
 
-        _context = new ApplicationDbContext(options);
+        _context = new ApplicationDbContext(options); 
         _repository = new EmailLogRepository(_context);
     }
 

@@ -27,6 +27,35 @@ public class RegisterService : IRegisterService
         _emailLogRepository = emailLogRepository;
         _mapper = mapper;
     }
+    public async Task<(bool IsSuccess, string Message)> RegisterEmployeeAsync(Employee employee)
+    {
+        var validationResult = ValidateEmployee(employee);
+
+        if (!validationResult.IsValid)
+            return (false, validationResult.ToString());
+
+        if (await EmployeeExistsAsync(employee.Email))
+            return (false, "Email already exists");
+
+
+        string employeeNumber = GenerateEmployeeNumber();
+
+        string generatedPassword = GenerateRandomPassword(12);
+
+        employee.EmployeeNumber = employeeNumber;
+        employee.Password = BCrypt.Net.BCrypt.HashPassword(generatedPassword);
+
+        await RegisterEmployeeToDatabaseAsync(employee);
+
+        var emailSuccess = await SendWelcomeEmailAsync(employee, generatedPassword);
+
+        if (!emailSuccess)
+        {
+            return (false, "Failed to send welcome email");
+        }
+
+        return (true, $"Employee registered successfully. Employee Number: {employeeNumber}, Password: {generatedPassword}");
+    }
 
     private string GenerateRandomPassword(int length = 12)
     {
@@ -155,33 +184,4 @@ public class RegisterService : IRegisterService
         await _emailLogRepository.LogEmailAsync(log);
     }
 
-    public async Task<(bool IsSuccess, string Message)> RegisterEmployeeAsync(Employee employee)
-    {
-        var validationResult = ValidateEmployee(employee);
-
-        if (!validationResult.IsValid)
-            return (false, validationResult.ToString());
-
-        if (await EmployeeExistsAsync(employee.Email))
-            return (false, "Email already exists");
-
-
-        string employeeNumber = GenerateEmployeeNumber();
-
-        string generatedPassword = GenerateRandomPassword(12);
-
-        employee.EmployeeNumber = employeeNumber;
-        employee.Password = BCrypt.Net.BCrypt.HashPassword(generatedPassword);
-
-        await RegisterEmployeeToDatabaseAsync(employee);
-
-        var emailSuccess = await SendWelcomeEmailAsync(employee, generatedPassword);
-
-        if (!emailSuccess)
-        {
-            return (false, "Failed to send welcome email");
-        }
-
-        return (true, $"Employee registered successfully. Employee Number: {employeeNumber}, Password: {generatedPassword}");
-    }
 }
