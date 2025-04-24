@@ -9,7 +9,6 @@ namespace EmployeeOnboard.Application.Interfaces
 {
     public interface ILogoutService
     {
-        //Task<bool> LogoutAsync(Guid userId);
         Task<(bool Success, string Message)> LogoutAsync(ClaimsPrincipal user);
     }
 }

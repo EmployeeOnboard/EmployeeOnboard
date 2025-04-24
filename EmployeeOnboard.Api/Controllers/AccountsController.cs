@@ -46,17 +46,7 @@ namespace EmployeeOnboard.Api.Controllers
             return Ok(new { success = true, message = result.Message });
         }
 
-        //[HttpPost]
-        //[Route("auth/token")]
-        //public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
-        //{
-        //    var response = await _authService.LoginAsync(loginDTO);
-        //    if (!response.Success)
-        //    {
-        //        return Unauthorized(response);
-        //    }
-        //    return Ok(response);
-        //}
+       
 
 
         [HttpPost]
@@ -80,24 +70,7 @@ namespace EmployeeOnboard.Api.Controllers
         }
 
 
-        //[HttpPost]
-        //[Route("logout")]
-        //public async Task<IActionResult> Logout()
-        //{
-        //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        //    if (string.IsNullOrEmpty(userIdClaim))
-        //        return Unauthorized("Invalid user");
-
-        //    if (!Guid.TryParse(userIdClaim, out var userId))
-        //        return BadRequest("Invalid user ID format");
-
-        //    var result = await _logoutService.LogoutAsync(userId);
-
-        //    if (!result) return BadRequest("Logout failed");
-
-        //    return Ok("Logged out successfully");
-        //}
+        
 
         [HttpPost]
         [Route("logout")]

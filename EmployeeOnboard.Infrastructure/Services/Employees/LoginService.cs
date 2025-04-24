@@ -33,11 +33,22 @@ namespace EmployeeOnboard.Infrastructure.Services.Employees
             {
                 var user = await GetEmployeeByEmailAsync(loginDTO.Email);
 
+                //if (user == null || !IsPasswordValid(loginDTO.Password, user.Password))
+                //{
+                //    _logger.LogWarning("Invalid login attempt for email: {Email}", loginDTO.Email);
+                //    throw new AuthenticationException("Invalid credentials");
+                //}
+
                 if (user == null || !IsPasswordValid(loginDTO.Password, user.Password))
                 {
                     _logger.LogWarning("Invalid login attempt for email: {Email}", loginDTO.Email);
-                    throw new AuthenticationException("Invalid credentials");
+                    return new AuthResponseDTO
+                    {
+                        Success = false,
+                        Message = "Invalid credentials"
+                    };
                 }
+
 
                 var token = GenerateJwtToken(user);
                 var refreshToken = GenerateRefreshToken();
