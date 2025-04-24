@@ -1,4 +1,4 @@
-
+﻿
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -60,7 +60,7 @@ namespace EmployeeOnboard.Infrastructure.Services
 
         private string GenerateJwtToken(Employee employee)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]));
+            var key = new SymmetricSecurityKey(Convert.FromBase64String(_configuration["Jwt:Secret"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -68,7 +68,9 @@ namespace EmployeeOnboard.Infrastructure.Services
                 new Claim(JwtRegisteredClaimNames.Sub, employee.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, employee.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()) // Ensure this claim exists
+                new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()), // Ensure this claim exists
+                new Claim(ClaimTypes.Role, employee.Role) // ✅ This enables role-based authorization
+
             };
 
 

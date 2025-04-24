@@ -1,13 +1,14 @@
 ﻿using EmployeeOnboard.Application.Interfaces;
 using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
-using EmployeeOnboard.Application.Interfaces.Services;
-using EmployeeOnboard.Domain.Entities;
+using EmployeeOnboard.Application.Interfaces.UOW;
 using EmployeeOnboard.Infrastructure.Repositories;
 using EmployeeOnboard.Infrastructure.Services;
+using EmployeeOnboard.Infrastructure.Services.Initilization;
 using EmployeeOnboard.Infrastructure.Services.Notification;
 using EmployeeOnboard.Infrastructure.Services.PasswordManagementService;
 using Microsoft.AspNetCore.Identity;
+using EmployeeOnboard.Infrastructure.UOW;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,6 +24,8 @@ namespace EmployeeOnboard.Infrastructure
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, LoginService>();
             services.AddScoped<ILogoutService, LogoutService>();
+            services.AddScoped<IUpdateProfileService, UpdateProfileService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IChangePassword, ChangePasswordService>();
             services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>();
             services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
@@ -31,11 +34,16 @@ namespace EmployeeOnboard.Infrastructure
 
             // Register EmailTemplateService
             services.AddScoped<EmailTemplateService>();
-
-            //Register Repositories 
+            services.AddScoped<IEmailRetryService, EmailRetryService>();
+            services.AddScoped<IEmailLogQueryService, EmailLogQueryService>();
 
             //register repositories
-           services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IEmailLogRepository, EmailLogRepository>();
+
+            // register the initializer class
+            services.AddScoped<DbInitializer>();
+
 
             // Register SmtpClientWrapper for dependency injection
             services.AddTransient<ISmtpClientWrapper>(provider =>

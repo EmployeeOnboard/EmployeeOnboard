@@ -1,18 +1,15 @@
-using EmployeeOnboard.Application.Interfaces;
-using EmployeeOnboard.Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
 using EmployeeOnboard.Application.Mappings;
 using EmployeeOnboard.Application.Validators;
 using EmployeeOnboard.Infrastructure.Data;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.EntityFrameworkCore;
 using EmployeeOnboard.Infrastructure;
 using Microsoft.OpenApi.Models;
+using EmployeeOnboard.Infrastructure.Services.Initilization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,13 +88,28 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Jwt:Secret"]))
+        };
+        // ✅ Add this block to log validation errors
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+                return Task.CompletedTask;
+            }
         };
     });
 
 
-
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope()) // as soon as the app starts, it checks the db and if the superadmin isn't present, it creates one automatically
+{
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+    await dbInitializer.SeedSuperAdminAsync();
+}
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

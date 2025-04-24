@@ -1,22 +1,25 @@
 ﻿
 
 using System.Text.Json;
+using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
+using EmployeeOnboard.Domain.Enums;
 using EmployeeOnboard.Domain.Models;
-
-//using EmployeeOnboard.Infrastructure.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using static System.Collections.Specialized.BitVector32;
+
+
 
 namespace EmployeeOnboard.Infrastructure.Services.Notification;
 
-public class EmailTemplateService
+public class EmailTemplateService : IEmailTemplateService
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<EmailTemplateService> _logger;
     private readonly string _templatesPath;
 
 
-    public EmailTemplateService(IConfiguration configuration , ILogger<EmailTemplateService> logger)
+    public EmailTemplateService(IConfiguration configuration, ILogger<EmailTemplateService> logger)
     {
         _configuration = configuration;
         _logger = logger;
@@ -25,11 +28,13 @@ public class EmailTemplateService
 
 
     //Get a specific template key
-    public EmailTemplate GetTemplate(string templateKey)
+    public EmailTemplateModel GetTemplate(EmailTemplateType templateType)
 
     {
-        //load the templates section from configuration
 
+        string templateKey = templateType.ToString(); // ✅ clean and clear
+
+        // load the templates section from configuration
         var templates = _configuration.GetSection($"EmailTemplates:{templateKey}");
 
         if (!templates.Exists())
@@ -40,20 +45,20 @@ public class EmailTemplateService
 
         //return the template from configuration
 
-        return new EmailTemplate
+        return new EmailTemplateModel
         {
             Subject = templates["Subject"] ?? "",
 
             Body = templates["Body"] ?? ""
         };
 
-     
+
     }
 
     public (string Subject, string Body) ReplacePlaceholders(string templateSubject, string templateBody, Dictionary<string, string> placeholders)
     {
         if (placeholders == null || placeholders.Count == 0)
-       {
+        {
             Console.WriteLine("No placeholders provided.");
             return (templateSubject, templateBody);
         }

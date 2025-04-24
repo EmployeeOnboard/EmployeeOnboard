@@ -5,6 +5,7 @@ using EmployeeOnboard.Infrastructure.Services.Notification;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
+using EmployeeOnboard.Domain.Enums;
 
 namespace EmployeeOnboard.Tests.UnitTests.Services
 {
@@ -15,8 +16,8 @@ namespace EmployeeOnboard.Tests.UnitTests.Services
         {
             // Arrange
             var inMemorySettings = new Dictionary<string, string> {
-                {"EmailTemplates:Welcome:Subject", "Test Subject"},
-                {"EmailTemplates:Welcome:Body", "Test Body"}
+                {"EmailTemplates:WelcomeEmail:Subject", "Test Subject"},
+                {"EmailTemplates:WelcomeEmail:Body", "Test Body"}
             };
 
             IConfiguration configuration = new ConfigurationBuilder()
@@ -28,7 +29,8 @@ namespace EmployeeOnboard.Tests.UnitTests.Services
             var service = new EmailTemplateService(configuration, logger);
 
             // Act
-            var template = service.GetTemplate("Welcome");
+            var templateType = Enum.Parse<EmailTemplateType>("WelcomeEmail");
+            var template = service.GetTemplate(templateType);
 
             // Assert
             Assert.Equal("Test Subject", template.Subject);
@@ -52,7 +54,8 @@ namespace EmployeeOnboard.Tests.UnitTests.Services
             var service = new EmailTemplateService(configuration, logger.Object);
 
             // Act
-            var result = service.GetTemplate("PartialTemplate");
+            var templateType = Enum.Parse<EmailTemplateType>("PartialTemplate");
+            var result = service.GetTemplate(templateType); // Use the parsed enum here
 
             // Assert
             Assert.Equal("", result.Subject);
@@ -76,7 +79,8 @@ namespace EmployeeOnboard.Tests.UnitTests.Services
             var service = new EmailTemplateService(configuration, logger.Object);
 
             // Act
-            var result = service.GetTemplate("PartialTemplate");
+            var templateType = Enum.Parse<EmailTemplateType>("PartialTemplate");
+            var result = service.GetTemplate(templateType); // Use the parsed enum here
 
             // Assert
             Assert.Equal("Only subject is present", result.Subject);
@@ -101,8 +105,8 @@ namespace EmployeeOnboard.Tests.UnitTests.Services
             var service = new EmailTemplateService(configuration, logger.Object);
 
             // Act
-            var result = service.GetTemplate("EmptyTemplate");
-
+            var templateType = Enum.Parse<EmailTemplateType>("EmptyTemplate");
+            var result = service.GetTemplate(templateType); // Use the parsed enum here
             // Assert
             Assert.Equal("", result.Subject);
             Assert.Equal("", result.Body);
