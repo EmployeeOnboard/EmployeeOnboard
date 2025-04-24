@@ -32,4 +32,8 @@ public class Employee
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public ICollection<EmployeeRole> EmployeeRoles { get; set; } = new List<EmployeeRole>();
+
+    public ForgotPasswordToken? ForgotPasswordToken { get; set; } = null!;
+
+
 }

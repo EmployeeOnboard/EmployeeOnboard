@@ -5,10 +5,11 @@
         "Body": "<p>Hello {FullName},</p><p>Your account has been created.</p><p><strong>Employee Number:</strong> {EmployeeNumber}</p><p><strong>Password:</strong> {Password}</p><p>You can now log in using your email</p>"
       },
 
-        "PasswordReset": {
-            "Subject": "Reset Your Password",
-            "Body": "<html><body><p>Hello {UserName},</p><p>Click <a href='{ResetLink}'>here</a> to reset your password.</p><p>If you didn't request this, please ignore this email.</p></body></html>"
-        }
+    "ForgotPassword": {
+      "Subject": "Reset Your Password",
+      "Body": "Hi {UserName},<br/><br/>Click <a href=\"{ResetLink}\">here</a> to reset your password. This link expires in {ExpiryTime}.<br/><br/>Thanks!"
     }
+
+  }
    
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EmployeeOnboard.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initialcreate : Migration
+    public partial class MergedToMain : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -70,6 +70,26 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ForgotPasswordToken",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PasswordResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordResetTokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForgotPasswordToken", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ForgotPasswordToken_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EmployeeRoles",
                 columns: table => new
                 {
@@ -105,6 +125,12 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ForgotPasswordToken_EmployeeId",
+                table: "ForgotPasswordToken",
+                column: "EmployeeId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Roles_Name",
                 table: "Roles",
                 column: "Name",
@@ -121,10 +147,13 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                 name: "EmployeeRoles");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "ForgotPasswordToken");
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Employees");
         }
     }
 }

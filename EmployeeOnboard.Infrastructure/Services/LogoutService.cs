@@ -21,7 +21,7 @@ namespace EmployeeOnboard.Infrastructure.Services
 
             if (user == null) return false;
 
-            user.RefreshToken = null; // Invalidate the refresh token
+           // user.RefreshToken = null; // Invalidate the refresh token
 
             await _context.SaveChangesAsync();
             return true;

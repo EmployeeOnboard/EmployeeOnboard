@@ -10,6 +10,7 @@ using FluentValidation.AspNetCore;
 using EmployeeOnboard.Infrastructure;
 using Microsoft.OpenApi.Models;
 using EmployeeOnboard.Infrastructure.Services.Initilization;
+using EmployeeOnboard.Infrastructure.Services.Notification;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,7 @@ builder.Services.AddFluentValidationAutoValidation()
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterEmployeeValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddScoped<IEmailTemplateService, EmailTemplateService>();
 
 
 //builder.Services.AddSwaggerGen();
@@ -47,7 +49,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Employee Onboard API", Version = "v1" });
 
-    // Add the JWT Bearer definition
+    //Add the JWT Bearer definition
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -91,7 +93,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 
 // Configure authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
