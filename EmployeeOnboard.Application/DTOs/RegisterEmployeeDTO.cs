@@ -13,5 +13,7 @@ public class RegisterEmployeeDTO
     public required string Email { get; set; }
     public string Address { get; set; }
     public required string Role { get; set; }
-    public string? ProfileImgUrl { get; set; }  // Optional
 }
+
+
+

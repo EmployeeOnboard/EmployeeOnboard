@@ -10,11 +10,24 @@ using EmployeeOnboard.Application.Validators;
 using EmployeeOnboard.Infrastructure.Data;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.EntityFrameworkCore;
 using EmployeeOnboard.Infrastructure;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Set up CORS 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", builder =>
+    {
+        builder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+    });
+
+});
+
+
 
 //This line ensures emailtemplate.json is read into IConfiguration
 builder.Configuration.AddJsonFile("EmailTemplates.json", optional: false, reloadOnChange: true);
@@ -110,6 +123,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors("AllowFrontend");
     app.UseSwagger();
     app.UseSwaggerUI();
 }

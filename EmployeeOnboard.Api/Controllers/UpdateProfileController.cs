@@ -39,11 +39,11 @@ namespace EmployeeOnboard.Api.Controllers
 
             if (result == null)
             {
-                _logger.LogError("Failed to update profile for user: {Email}", email);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to update profile");
+                _logger.LogError("Failed to update profile for user: {Message}", result.Message);
+                return BadRequest(new { success = false, message = result.Message });
             }
 
-            return Ok(result);
+            return Ok(new { success = true, message = result.Message, data = result.Data });
         }
     }
 }
