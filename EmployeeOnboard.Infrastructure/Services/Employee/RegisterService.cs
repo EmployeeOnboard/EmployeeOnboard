@@ -27,6 +27,7 @@ public class RegisterService : IRegisterService
         _emailLogRepository = emailLogRepository;
         _mapper = mapper;
     }
+
     public async Task<(bool IsSuccess, string Message)> RegisterEmployeeAsync(Employee employee)
     {
         var validationResult = ValidateEmployee(employee);
