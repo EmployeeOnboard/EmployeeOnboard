@@ -49,7 +49,6 @@ namespace EmployeeOnboard.Api.Controllers
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
         {
-            //var userId = GetUserIdFromToken(); // implement this part if you haven’t yet
             await _changePasswordService.ChangePasswordAsync(dto);
             return Ok(new { message = "Password changed successfully." });
         }
