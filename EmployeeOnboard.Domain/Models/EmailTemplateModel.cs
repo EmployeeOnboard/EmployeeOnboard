@@ -1,5 +1,5 @@
 ﻿
-namespace EmployeeOnboard.Infrastructure.Models
+namespace EmployeeOnboard.Domain.Models
 {
     public class EmailTemplate
     {

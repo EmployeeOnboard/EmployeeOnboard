@@ -9,7 +9,7 @@ using EmployeeOnboard.Application.DTOs;
 using EmployeeOnboard.Application.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using EmployeeOnboard.Infrastructure.Models;
+using EmployeeOnboard.Domain.Models;
 using Azure.Core;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 

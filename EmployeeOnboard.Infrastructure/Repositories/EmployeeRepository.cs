@@ -58,6 +58,7 @@ public class EmployeeRepository : IEmployeeRepository
             throw new InvalidOperationException("Super Admin role cannot be changed."); //this will prevent unauthorized update of the superadmin 
         }
 
+
         _context.Employees.Update(employee);
         await _context.SaveChangesAsync();
     }

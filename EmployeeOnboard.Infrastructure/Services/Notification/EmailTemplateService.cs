@@ -1,7 +1,9 @@
 ﻿
 
 using System.Text.Json;
-using EmployeeOnboard.Infrastructure.Models;
+using EmployeeOnboard.Domain.Models;
+
+//using EmployeeOnboard.Infrastructure.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 

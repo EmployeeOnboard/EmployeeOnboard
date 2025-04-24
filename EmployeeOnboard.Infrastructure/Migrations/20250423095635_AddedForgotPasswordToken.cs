@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EmployeeOnboard.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class MigrationTables : Migration
+    public partial class AddedForgotPasswordToken : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,8 +24,6 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsPasswordChanged = table.Column<bool>(type: "bit", nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -47,6 +45,26 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ForgotPasswordToken",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PasswordResetToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordResetTokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForgotPasswordToken", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ForgotPasswordToken_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,8 +93,8 @@ namespace EmployeeOnboard.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Employees",
-                columns: new[] { "Id", "Address", "CreatedAt", "Email", "EmployeeNumber", "FirstName", "IsPasswordChanged", "LastName", "MiddleName", "Password", "PhoneNumber", "RefreshToken", "RefreshTokenExpiryTime", "Role", "Status" },
-                values: new object[] { new Guid("e7d93a90-78e4-4b0f-bc93-1f78b91d6a52"), "", new DateTime(2025, 3, 27, 0, 0, 0, 0, DateTimeKind.Utc), "superadmin@company.com", "SUPERADMIN01", "Super", false, "Admin", "", "$2a$11$Hj2Qj7fPKfTrRUzWYV9nNuec7Yl3xjlJYoE7O7E8R0gGJ9B6xNG1q", "", null, null, "SuperAdmin", 0 });
+                columns: new[] { "Id", "Address", "CreatedAt", "Email", "EmployeeNumber", "FirstName", "IsPasswordChanged", "LastName", "MiddleName", "Password", "PhoneNumber", "Role", "Status" },
+                values: new object[] { new Guid("e7d93a90-78e4-4b0f-bc93-1f78b91d6a52"), "", new DateTime(2025, 3, 27, 0, 0, 0, 0, DateTimeKind.Utc), "superadmin@company.com", "SUPERADMIN01", "Super", false, "Admin", "", "$2a$11$Hj2Qj7fPKfTrRUzWYV9nNuec7Yl3xjlJYoE7O7E8R0gGJ9B6xNG1q", "", "SuperAdmin", 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmployeeRoles_RoleId",
@@ -87,6 +105,12 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                 name: "IX_Employees_EmployeeNumber",
                 table: "Employees",
                 column: "EmployeeNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ForgotPasswordToken_EmployeeId",
+                table: "ForgotPasswordToken",
+                column: "EmployeeId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -103,10 +127,13 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                 name: "EmployeeRoles");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "ForgotPasswordToken");
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Employees");
         }
     }
 }

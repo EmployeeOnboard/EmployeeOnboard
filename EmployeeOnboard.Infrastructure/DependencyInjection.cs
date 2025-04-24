@@ -2,9 +2,12 @@
 using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Application.Interfaces.Services;
+using EmployeeOnboard.Domain.Entities;
 using EmployeeOnboard.Infrastructure.Repositories;
 using EmployeeOnboard.Infrastructure.Services;
 using EmployeeOnboard.Infrastructure.Services.Notification;
+using EmployeeOnboard.Infrastructure.Services.PasswordManagementService;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +23,11 @@ namespace EmployeeOnboard.Infrastructure
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, LoginService>();
             services.AddScoped<ILogoutService, LogoutService>();
+            services.AddScoped<IChangePassword, ChangePasswordService>();
+            services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>();
+            services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
+            services.AddScoped<IForgotPasswordTokenRepository, ForgotPasswordTokenRepository>();
+
 
             // Register EmailTemplateService
             services.AddScoped<EmailTemplateService>();
@@ -47,19 +55,6 @@ namespace EmployeeOnboard.Infrastructure
         }
     }
 }
-    //public static class DependencyInjection
-    //{
-    //    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
-    //    {
-    //        services.AddScoped<INotificationService, NotificationService>();
-
-    //        //Register EmailTemplateService
-    //        services.AddScoped<EmailTemplateService>();
-
-    //        return services;
-    //    }
-
-    //}
 
 
 
