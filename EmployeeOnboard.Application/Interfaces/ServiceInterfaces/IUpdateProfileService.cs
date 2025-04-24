@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EmployeeOnboard.Application.DTOs;
+using EmployeeOnboard.Application.Shared;
 
 namespace EmployeeOnboard.Application.Interfaces.ServiceInterfaces
 {
     public interface IUpdateProfileService
     {
-        Task<string> UpdateProfileAsync(UpdateProfileDTO dto, string userId, string role);
+        Task<Result<UpdatedUserDTO>> UpdateProfileAsync(UpdateProfileDTO dto, string userId, string role);
 
     }
 }

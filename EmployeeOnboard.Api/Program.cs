@@ -13,6 +13,20 @@ using EmployeeOnboard.Infrastructure.Services.Initilization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Set up CORS 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", builder =>
+    {
+        builder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+    });
+
+});
+
+
+
 //This line ensures emailtemplate.json is read into IConfiguration
 builder.Configuration.AddJsonFile("EmailTemplates.json", optional: false, reloadOnChange: true);
 
@@ -114,6 +128,7 @@ using (var scope = app.Services.CreateScope()) // as soon as the app starts, it 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors("AllowFrontend");
     app.UseSwagger();
     app.UseSwaggerUI();
 }

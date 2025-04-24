@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using EmployeeOnboard.Application.Interfaces.UOW;
 using EmployeeOnboard.Infrastructure.UOW;
 using EmployeeOnboard.Infrastructure.Repositories;
+using EmployeeOnboard.Application.Shared;
 
 
 namespace EmployeeOnboard.Infrastructure.Services
@@ -22,14 +23,14 @@ namespace EmployeeOnboard.Infrastructure.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task <string> UpdateProfileAsync(UpdateProfileDTO dto, string userId, string role)
+        public async Task<Result<UpdatedUserDTO>> UpdateProfileAsync(UpdateProfileDTO dto, string userId, string role)
         {
             //retrieve the user
             var user = await _unitOfWork.Employee.GetByEmailAsync(userId);
             if (user == null)
             {
                 _logger.LogWarning($"User with Email {userId} not found");
-                return "user not found";
+                return Result<UpdatedUserDTO>.Failure("User not found");
             }
 
             //update fields based on roles 
@@ -45,6 +46,8 @@ namespace EmployeeOnboard.Infrastructure.Services
             else if (role == "Admin" || role == "SuperAdmin")
             {
                 user.FirstName = dto.FirstName;
+                user.MiddleName = dto.MiddleName;
+                user.LastName = dto.LastName;
                 user.Email = dto.Email;
                 user.Role = dto.Role;
                 user.PhoneNumber = dto.PhoneNumber;
@@ -58,14 +61,32 @@ namespace EmployeeOnboard.Infrastructure.Services
 
             //return success message 
             if (rowsAffected > 0)
+            {
+                var UpdatedUserDto = new UpdatedUserDTO
+                {
+                    FirstName = user.FirstName,
+                    MiddleName = user.MiddleName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Role = user.Role,
+                    PhoneNumber = user.PhoneNumber,
+                    AltPhoneNumber = user.AltPhoneNumber,
+                    Address = user.Address,
+                    ProfileImgUrl = user.ProfileImgUrl
+                };
 
-                return /*Result.Success*/("Profile updated successfully.");
+                return Result<UpdatedUserDTO>.Success(UpdatedUserDto, "Profile updated successfully.");
+            }
+            else
+                {
+                    return Result<UpdatedUserDTO>.Failure("No changes were saved.");
+                }
 
-            return /*Result.Failure*/("No changes were saved.");
+            }
         }
-
     }
-}
+
+
 
    
 
