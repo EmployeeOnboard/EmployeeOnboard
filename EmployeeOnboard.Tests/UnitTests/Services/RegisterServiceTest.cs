@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using EmployeeOnboard.Infrastructure.Services;
+using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 
 namespace EmployeeOnboard.Tests.UnitTests.Services;
 
@@ -14,11 +15,13 @@ public class RegisterServiceTest
     private readonly RegisterService _registerService;
     private readonly Mock<IEmployeeRepository> _employeeRepositoryMock = new();
     private readonly Mock<ILogger<RegisterService>> _loggerMock = new();
+    private readonly Mock<INotificationService> _notificationServiceMock = new();
     private readonly Mock<IMapper> _mapperMock = new();
+    private readonly Mock<IEmailLogRepository> _emailLogRepositoryMock = new();
 
     public RegisterServiceTest()
     {
-        _registerService = new RegisterService(_employeeRepositoryMock.Object, _loggerMock.Object, _mapperMock.Object);
+        _registerService = new RegisterService(_employeeRepositoryMock.Object, _loggerMock.Object, _notificationServiceMock.Object, _emailLogRepositoryMock.Object, _mapperMock.Object);
     }
     [Fact]
     public async Task RegisterEmployeeAsync_ShouldReturnError_WhenEmailExists()

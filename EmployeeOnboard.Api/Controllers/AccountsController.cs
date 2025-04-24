@@ -25,17 +25,30 @@ namespace EmployeeOnboard.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterEmployee([FromBody] RegisterEmployeeDTO request)
         {
-            var employee = _mapper.Map<Employee>(request);
-
-            var result = await _registerService.RegisterEmployeeAsync(employee);
-
-            if (!result.IsSuccess)
+            try
             {
-                _logger.LogWarning("Employee registration failed: {Message}", result.Message);
-                return BadRequest(new { success = false, message = result.Message });
-            }
+                var employee = _mapper.Map<Employee>(request);
 
-            return Ok(new { success = true, message = result.Message });
+                var result = await _registerService.RegisterEmployeeAsync(employee);
+
+                if (!result.IsSuccess)
+                {
+                    _logger.LogWarning("Employee registration failed: {Message}", result.Message);
+                    return BadRequest(new { success = false, message = result.Message });
+                }
+
+                return Ok(new { success = true, message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred during employee registration.");
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
+            }
         }
+
     }
 }

@@ -1,7 +1,7 @@
 ﻿using EmployeeOnboard.Application.DTOs;
 
 
-namespace EmployeeOnboard.Application.Interfaces.Services
+namespace EmployeeOnboard.Application.Interfaces.ServiceInterfaces
 {
     public interface INotificationService
     {
