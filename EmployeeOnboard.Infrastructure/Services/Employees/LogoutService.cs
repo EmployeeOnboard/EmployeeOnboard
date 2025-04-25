@@ -47,6 +47,7 @@ namespace EmployeeOnboard.Infrastructure.Services.Employees
             }
         }
 
+
         // 🔹 Extracts userId from claims
         private Guid? GetUserIdFromClaims(ClaimsPrincipal user)
         {

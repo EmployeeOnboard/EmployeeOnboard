@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeOnboard.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250409122015_MigrationTables")]
-    partial class MigrationTables
+    [Migration("20250425061722_createsuperadmin")]
+    partial class createsuperadmin
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,44 @@ namespace EmployeeOnboard.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("EmployeeOnboard.Domain.Entities.EmailLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSuccess")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastRetriedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RecipientEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TemplateKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailLogs");
+                });
+
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.Employee", b =>
                 {
                     b.Property<Guid>("Id")
@@ -32,6 +70,10 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AltPhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -50,9 +92,6 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsPasswordChanged")
-                        .HasColumnType("bit");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -69,11 +108,8 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RefreshToken")
+                    b.Property<string>("ProfileImgUrl")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("RefreshTokenExpiryTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -88,24 +124,6 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Employees");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("e7d93a90-78e4-4b0f-bc93-1f78b91d6a52"),
-                            Address = "",
-                            CreatedAt = new DateTime(2025, 3, 27, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "superadmin@company.com",
-                            EmployeeNumber = "SUPERADMIN01",
-                            FirstName = "Super",
-                            IsPasswordChanged = false,
-                            LastName = "Admin",
-                            MiddleName = "",
-                            Password = "$2a$11$Hj2Qj7fPKfTrRUzWYV9nNuec7Yl3xjlJYoE7O7E8R0gGJ9B6xNG1q",
-                            PhoneNumber = "",
-                            Role = "SuperAdmin",
-                            Status = 0
-                        });
                 });
 
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.EmployeeRole", b =>
@@ -121,6 +139,30 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("EmployeeRoles");
+                });
+
+            modelBuilder.Entity("EmployeeOnboard.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.Role", b =>
@@ -163,9 +205,22 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     b.Navigation("role");
                 });
 
+            modelBuilder.Entity("EmployeeOnboard.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("EmployeeOnboard.Domain.Entities.Employee", "Employee")
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("EmployeeOnboard.Domain.Entities.RefreshToken", "EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.Employee", b =>
                 {
                     b.Navigation("EmployeeRoles");
+
+                    b.Navigation("RefreshToken");
                 });
 
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.Role", b =>

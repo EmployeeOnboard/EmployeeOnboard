@@ -4,6 +4,7 @@ using EmployeeOnboard.Application.Interfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Domain.Entities;
 using EmployeeOnboard.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Authentication;
@@ -33,20 +34,49 @@ namespace EmployeeOnboard.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterEmployee([FromBody] RegisterEmployeeDTO request)
         {
-            var employee = _mapper.Map<Employee>(request);
-
-            var result = await _registerService.RegisterEmployeeAsync(employee);
-
-            if (!result.IsSuccess)
+            try
             {
-                _logger.LogWarning("Employee registration failed: {Message}", result.Message);
-                return BadRequest(new { success = false, message = result.Message });
+                var employee = _mapper.Map<Employee>(request);
+
+                var result = await _registerService.RegisterEmployeeAsync(employee);
+
+                if (!result.IsSuccess)
+                {
+                    _logger.LogWarning("Employee registration failed: {Message}", result.Message);
+                    return BadRequest(new { success = false, message = result.Message });
+                }
+
+                return Ok(new { success = true, message = result.Message });
             }
-
-            return Ok(new { success = true, message = result.Message });
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred during employee registration.");
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An unexpected error occurred. Please try again later."
+                });
+            }
         }
-
-       
+        //[HttpPost]
+        //[Route("auth/token")]
+        //public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
+        //{
+        //    try
+        //    {
+        //        var response = await _authService.LoginAsync(loginDTO);
+        //        return Ok(response); // Return successful response
+        //    }
+        //    catch (AuthenticationException ex)
+        //    {
+        //        return Unauthorized(new { message = ex.Message }); // Handle authentication failure
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception here if needed
+        //        return StatusCode(500, new { message = "An unexpected error occurred.", error = ex.Message });
+        //    }
+        //}
 
 
         [HttpPost]
@@ -55,36 +85,54 @@ namespace EmployeeOnboard.Api.Controllers
         {
             try
             {
-                var response = await _authService.LoginAsync(loginDTO);
-                return Ok(response); // Return successful response
-            }
-            catch (AuthenticationException ex)
-            {
-                return Unauthorized(new { message = ex.Message }); // Handle authentication failure
+                var result = await _authService.LoginAsync(loginDTO);
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                // Log the exception here if needed
-                return StatusCode(500, new { message = "An unexpected error occurred.", error = ex.Message });
+                var innerMessage = ex.InnerException?.Message ?? "No inner exception";
+                _logger.LogError(ex, "Unhandled exception in login controller");
+
+                return StatusCode(500, new
+                {
+                    Message = "Internal Server Error",
+                    Error = ex.Message,
+                    InnerError = innerMessage
+                });
             }
         }
 
 
-        
+
+
+        //[HttpPost]
+        //[Route("logout")]
+        //public async Task<IActionResult> Logout()
+        //{
+        //    var (success, message) = await _logoutService.LogoutAsync(User);
+
+        //    if (!success)
+        //    {
+        //        return BadRequest(message);
+        //    }
+
+        //    return Ok(message);
+        //}
 
         [HttpPost]
         [Route("logout")]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
-            var (success, message) = await _logoutService.LogoutAsync(User);
-
-            if (!success)
+            var result = await _logoutService.LogoutAsync(User);  // User is the ClaimsPrincipal
+            if (!result.Success)
             {
-                return BadRequest(message);
+                _logger.LogWarning("Logout failed for user {UserId}: {Message}", User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, result.Message);
+                return BadRequest(result.Message);
             }
-
-            return Ok(message);
+            return Ok(result.Message);
         }
+
 
     }
 }

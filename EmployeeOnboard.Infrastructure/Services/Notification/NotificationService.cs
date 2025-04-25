@@ -6,12 +6,12 @@ using System.Net.Mail;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EmployeeOnboard.Application.DTOs;
-using EmployeeOnboard.Application.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using EmployeeOnboard.Infrastructure.Models;
+using EmployeeOnboard.Domain.Models;
 using Azure.Core;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
+using EmployeeOnboard.Domain.Enums;
 
 
 namespace EmployeeOnboard.Infrastructure.Services.Notification
@@ -40,7 +40,7 @@ namespace EmployeeOnboard.Infrastructure.Services.Notification
             try
             {
                 // Get the email template
-                var template = _emailTemplateService.GetTemplate(request.TemplateKey); // Await the GetTemplate method
+                var template = _emailTemplateService.GetTemplate(EmailTemplateType.WelcomeEmail); // ✅
                 var (subject, body) = _emailTemplateService.ReplacePlaceholders(template.Subject, template.Body, request.Placeholders);
 
 
@@ -97,108 +97,3 @@ namespace EmployeeOnboard.Infrastructure.Services.Notification
 }
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Net;
-//using System.Net.Http;
-//using System.Net.Mail;
-//using System.Text;
-//using System.Text.Encodings.Web;
-//using System.Text.Json;
-//using System.Threading.Tasks;
-//using EmployeeOnboard.Application.DTOs;
-//using EmployeeOnboard.Application.Interfaces.Services;
-//using MediatR;
-//using Microsoft.Extensions.Configuration;
-//using EmployeeOnboard.Infrastructure.Models;
-
-
-
-//namespace EmployeeOnboard.Infrastructure.Services.Notification
-//{
-//    public class NotificationService : INotificationService
-//    {
-//        private readonly IConfiguration _configuration;
-
-//        private readonly string _templatesPath;
-
-//        public NotificationService(IConfiguration configuration)
-//        {
-//            _configuration = configuration;
-
-//            _templatesPath = Path.Combine(Directory.GetCurrentDirectory(), "Templates", "EmailTemplates.json");
-
-//        }
-
-//        public async Task SendEmailAsync(EmailRequestDto request)
-//        {
-//            try
-//            {
-
-//                if (!File.Exists(_templatesPath))
-//                {
-//                    throw new FileNotFoundException($"Email template file not found at {_templatesPath}");
-//                }
-
-//                string jsonContent = await File.ReadAllTextAsync(_templatesPath);
-
-//                var templates = JsonSerializer.Deserialize<Dictionary<string, EmailTemplate>>(jsonContent);
-
-//                // ✅ Check if the template exists
-//                if (!templates.ContainsKey(request.TemplateKey))
-//                {
-//                    throw new KeyNotFoundException($"Email template '{request.TemplateKey}' not found.");
-//                }
-
-//                var template = templates[request.TemplateKey];
-
-//                // Retrieve the correct template path based on the TemplateKey
-//                if (!templates.TryGetValue(request.TemplateKey, out EmailTemplate? templatePath))
-//                {
-//                    throw new KeyNotFoundException($"No email template found for key: {request.TemplateKey}");
-//                }
-
-//                // ✅ Replace placeholders dynamically
-//                string emailBody = template.Body;
-//                string emailSubject = template.Subject;
-
-//                foreach (var placeholder in request.Placeholders)
-//                {
-//                    emailBody = emailBody.Replace($"{{{{{placeholder.Key}}}}}", placeholder.Value);
-//                    emailSubject = emailSubject.Replace($"{{{{{placeholder.Key}}}}}", placeholder.Value);
-//                }
-
-//                var smtpClient = new SmtpClient
-//                {
-//                    Host = _configuration["Smtp:Host"],
-//                    Port = int.Parse(_configuration["Smtp:Port"]),
-//                    EnableSsl = true,
-//                    DeliveryMethod = SmtpDeliveryMethod.Network,
-//                    UseDefaultCredentials = false,
-//                    Credentials = new NetworkCredential(
-//                        _configuration["Smtp:Username"],
-//                        _configuration["Smtp:Password"]
-//                    )
-//                };
-
-//                var mailMessage = new MailMessage
-//                {
-//                    From = new MailAddress(_configuration["Smtp:FromEmail"]),
-//                    Subject = emailSubject,
-//                    Body = emailBody,
-//                    IsBodyHtml = true
-//                };
-
-//                mailMessage.To.Add(request.To);
-
-//                await smtpClient.SendMailAsync(mailMessage);
-//            }
-
-//            catch (Exception ex)
-//            {
-//                throw new Exception($"Failed to send email. Error: {ex.Message} | StackTrace: {ex.StackTrace}");
-//            }
-//        }
-//    }
-//}

@@ -1,6 +1,60 @@
 @EmployeeOnboard.Api_HostAddress = http://localhost:5141
 
-GET {{EmployeeOnboard.Api_HostAddress}}/weatherforecast/
+
+### Register a new employee
+POST {{EmployeeOnboard.Api_HostAddress}}/api/account/register
+Content-Type: application/json
+
+{ 
+  "firstName": "Elvis",
+  "middleName": "",
+  "lastName": "O",
+  "phoneNumber": "254735765565",
+  "email": "santaemmanuel2018@gmail.com",
+  "address": "4000 mombasa",
+  "role": "Developer"
+}
+
+###
+
+### Disable Employee by Employee Number
+PUT {{EmployeeOnboard.Api_HostAddress}}/api/employee/disable/E2E4E106
+
+###
+
+### Enable Employee
+PUT {{EmployeeOnboard.Api_HostAddress}}/api/employee/enable/E2E4E106
+
+###
+
+### Get Employee by Employee Number
+GET {{EmployeeOnboard.Api_HostAddress}}/api/employee/get-employee/E2E4E106
+
+###
+
+### Get All Active Employees
+GET {{EmployeeOnboard.Api_HostAddress}}/api/employee/active
+
+###
+
+### Get Employee by Email
+GET {{EmployeeOnboard.Api_HostAddress}}/api/employee/email?email=mercythuo17@gmail.com
+
+###
+
+### Get Failed Emails
+GET https://localhost:7203/api/notification/failed
 Accept: application/json
 
 ###
+
+### Retry Selected Emails
+POST https://localhost:7203/api/notification/retry-selected
+Content-Type: application/json
+Accept: application/json
+
+[
+  "user1@example.com",
+  "user2@example.com"
+]
+

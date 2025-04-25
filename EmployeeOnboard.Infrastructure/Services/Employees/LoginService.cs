@@ -3,7 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 using EmployeeOnboard.Application.DTOs;
 using EmployeeOnboard.Application.Interfaces;
 using EmployeeOnboard.Domain.Entities;
@@ -33,12 +32,6 @@ namespace EmployeeOnboard.Infrastructure.Services.Employees
             {
                 var user = await GetEmployeeByEmailAsync(loginDTO.Email);
 
-                //if (user == null || !IsPasswordValid(loginDTO.Password, user.Password))
-                //{
-                //    _logger.LogWarning("Invalid login attempt for email: {Email}", loginDTO.Email);
-                //    throw new AuthenticationException("Invalid credentials");
-                //}
-
                 if (user == null || !IsPasswordValid(loginDTO.Password, user.Password))
                 {
                     _logger.LogWarning("Invalid login attempt for email: {Email}", loginDTO.Email);
@@ -49,10 +42,11 @@ namespace EmployeeOnboard.Infrastructure.Services.Employees
                     };
                 }
 
-
+                // Generate token and refresh token
                 var token = GenerateJwtToken(user);
                 var refreshToken = GenerateRefreshToken();
 
+                // Store or update the refresh token in the database
                 await SaveOrUpdateRefreshTokenAsync(user, refreshToken);
 
                 return new AuthResponseDTO
@@ -67,11 +61,18 @@ namespace EmployeeOnboard.Infrastructure.Services.Employees
             {
                 throw; // Bubble up to controller
             }
+            
+
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unexpected error occurred during login for email: {Email}", loginDTO.Email);
-                throw new Exception("An error occurred while processing your login. Please try again later.");
+                // Optional: log the inner exception for debugging
+                var innerMessage = ex.InnerException?.Message ?? "No inner exception";
+                _logger.LogError(ex, "Login error: {InnerMessage}", innerMessage);
+
+                throw; // Let the controller handle the error response
             }
+
+
         }
 
         private async Task<Employee?> GetEmployeeByEmailAsync(string email)
@@ -84,17 +85,18 @@ namespace EmployeeOnboard.Infrastructure.Services.Employees
             return BCrypt.Net.BCrypt.Verify(plainPassword, hashedPassword);
         }
 
+        // Generate the JWT token with necessary claims
         private string GenerateJwtToken(Employee employee)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]));
+            var key = new SymmetricSecurityKey(Convert.FromBase64String(_configuration["Jwt:Secret"]));
+
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, employee.Id.ToString()),
+            var claims = new[] {
+                new Claim(JwtRegisteredClaimNames.Sub, employee.Id.ToString()), // This is used in your LogoutService
                 new Claim(JwtRegisteredClaimNames.Email, employee.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()) // This is also crucial for logout
             };
 
             var token = new JwtSecurityToken(
@@ -124,6 +126,8 @@ namespace EmployeeOnboard.Infrastructure.Services.Employees
             {
                 user.RefreshToken.Token = refreshToken;
                 user.RefreshToken.ExpiresAt = DateTime.UtcNow.AddDays(7);
+
+                _context.RefreshTokens.Update(user.RefreshToken); // explicitly mark as update
             }
             else
             {
@@ -133,10 +137,9 @@ namespace EmployeeOnboard.Infrastructure.Services.Employees
                     ExpiresAt = DateTime.UtcNow.AddDays(7),
                     EmployeeId = user.Id
                 };
-                await _context.RefreshTokens.AddAsync(user.RefreshToken);
+                await _context.RefreshTokens.AddAsync(user.RefreshToken); // only insert if it's new
             }
 
-            await _context.SaveChangesAsync();
         }
     }
 }

@@ -5,7 +5,7 @@
 namespace EmployeeOnboard.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedRefreshTokenentity : Migration
+    public partial class createsuperadmin : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

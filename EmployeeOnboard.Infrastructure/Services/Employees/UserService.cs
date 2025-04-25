@@ -31,7 +31,7 @@ public class UserService : IUserService
 
         if (employee.EmployeeNumber == "SUPERADMIN01")
         {
-            _logger.LogWarning("Attempt to disable SuperAdmin with EmployeeNumber {EmployeeNumber} was blocked.", employeeNumber);
+            _logger.LogWarning("ℹ️ Attempt to disable SuperAdmin with EmployeeNumber {EmployeeNumber} was blocked.", employeeNumber);
             return false;
         }
 
@@ -47,7 +47,7 @@ public class UserService : IUserService
         try
         {
             await _employeeRepository.UpdateAsync(employee);
-            _logger.LogInformation("Employee with EmployeeNumber {EmployeeNumber} has been successfully disabled.", employeeNumber);
+            _logger.LogInformation("✅ Employee with EmployeeNumber {EmployeeNumber} has been successfully disabled.", employeeNumber);
             return true;
         }
         catch (Exception ex)
