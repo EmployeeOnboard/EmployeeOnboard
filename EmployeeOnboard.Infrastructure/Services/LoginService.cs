@@ -43,8 +43,8 @@ namespace EmployeeOnboard.Infrastructure.Services
 
             var token = GenerateJwtToken(user);
             var refreshToken = GenerateRefreshToken();
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            //user.RefreshToken = refreshToken;
+            //user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
             _context.Employees.Update(user);
             await _context.SaveChangesAsync();

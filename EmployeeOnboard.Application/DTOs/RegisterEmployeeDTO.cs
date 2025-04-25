@@ -12,3 +12,6 @@ public class RegisterEmployeeDTO
     public string Address { get; set; }
     public required string Role { get; set; }
 }
+
+
+
