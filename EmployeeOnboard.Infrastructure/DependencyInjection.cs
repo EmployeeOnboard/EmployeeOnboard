@@ -7,6 +7,7 @@ using EmployeeOnboard.Infrastructure.Services;
 using EmployeeOnboard.Infrastructure.Services.Employees;
 using EmployeeOnboard.Infrastructure.Services.Initilization;
 using EmployeeOnboard.Infrastructure.Services.Notification;
+using EmployeeOnboard.Infrastructure.Services.PasswordManagementService;
 using EmployeeOnboard.Infrastructure.UOW;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,9 @@ namespace EmployeeOnboard.Infrastructure
             services.AddScoped<ILogoutService, LogoutService>();
             services.AddScoped<IUpdateProfileService, UpdateProfileService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IChangePassword, ChangePasswordService>();
+            services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
+            services.AddScoped<IForgotPasswordTokenRepository, ForgotPasswordTokenRepository>();
 
 
             // Register EmailTemplateService

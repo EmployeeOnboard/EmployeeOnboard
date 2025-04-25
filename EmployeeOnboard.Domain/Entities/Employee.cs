@@ -32,7 +32,8 @@ public class Employee
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public ICollection<EmployeeRole> EmployeeRoles { get; set; } = new List<EmployeeRole>();
-    // Navigation property for Refresh Tokens
+
+    public ForgotPasswordToken? ForgotPasswordToken { get; set; } = null!;
     public RefreshToken? RefreshToken { get; set; }
    
 }

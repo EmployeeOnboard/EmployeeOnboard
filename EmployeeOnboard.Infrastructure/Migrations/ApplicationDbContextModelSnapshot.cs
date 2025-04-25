@@ -138,6 +138,29 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     b.ToTable("EmployeeRoles");
                 });
 
+            modelBuilder.Entity("EmployeeOnboard.Domain.Entities.ForgotPasswordToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PasswordResetToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PasswordResetTokenExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("ForgotPasswordToken");
+                });
+
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -202,6 +225,17 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     b.Navigation("role");
                 });
 
+            modelBuilder.Entity("EmployeeOnboard.Domain.Entities.ForgotPasswordToken", b =>
+                {
+                    b.HasOne("EmployeeOnboard.Domain.Entities.Employee", "Employee")
+                        .WithOne("ForgotPasswordToken")
+                        .HasForeignKey("EmployeeOnboard.Domain.Entities.ForgotPasswordToken", "EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("EmployeeOnboard.Domain.Entities.Employee", "Employee")
@@ -216,6 +250,8 @@ namespace EmployeeOnboard.Infrastructure.Migrations
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.Employee", b =>
                 {
                     b.Navigation("EmployeeRoles");
+
+                    b.Navigation("ForgotPasswordToken");
 
                     b.Navigation("RefreshToken");
                 });
