@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using EmployeeOnboard.Application.DTOs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using EmployeeOnboard.Domain.Models;
 using Azure.Core;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Domain.Enums;

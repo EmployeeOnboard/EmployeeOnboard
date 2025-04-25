@@ -18,17 +18,12 @@ builder.Configuration.AddJsonFile("EmailTemplates.json", optional: false, reload
 
 //Services
 builder.Services.AddInfrastructure(builder.Configuration);
-
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation()
                 .AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterEmployeeValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-
-
-//builder.Services.AddSwaggerGen();
-
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Employee Onboard API", Version = "v1" });
@@ -59,6 +54,19 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+// CORs Configuration 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("https://ngrok.com/r/iep") 
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 
 
 //db connection
@@ -119,6 +127,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+app.UseCors("AllowFrontend"); 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
