@@ -30,7 +30,7 @@ builder.Services.AddCors(options =>
 //This line ensures emailtemplate.json is read into IConfiguration
 builder.Configuration.AddJsonFile("EmailTemplates.json", optional: false, reloadOnChange: true);
 
-//Services
+//Services 
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddControllers();
