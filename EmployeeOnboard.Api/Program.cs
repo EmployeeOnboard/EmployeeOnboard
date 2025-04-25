@@ -79,9 +79,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 
 
-
-
-// Configure authentication
+//Configure authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
@@ -107,14 +105,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 });
 
 
-var app = builder.Build();
 
-using (var scope = app.Services.CreateScope()) // as soon as the app starts, it checks the db and if the superadmin isn't present, it creates one automatically
-{
-    var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
-    await dbInitializer.SeedSuperAdminAsync();
-}
+    var app = builder.Build();
 
+    using (var scope = app.Services.CreateScope()) // as soon as the app starts, it checks the db and if the superadmin isn't present, it creates one automatically
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+        await dbInitializer.SeedSuperAdminAsync();
+    }
+
+
+
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

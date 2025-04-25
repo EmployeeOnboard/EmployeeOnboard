@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeOnboard.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250425060109_Initial")]
-    partial class Initial
+    [Migration("20250425092054_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -111,12 +111,6 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     b.Property<string>("ProfileImgUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("RefreshTokenExpiryTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -170,6 +164,30 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     b.ToTable("ForgotPasswordToken");
                 });
 
+            modelBuilder.Entity("EmployeeOnboard.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -221,11 +239,24 @@ namespace EmployeeOnboard.Infrastructure.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("EmployeeOnboard.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("EmployeeOnboard.Domain.Entities.Employee", "Employee")
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("EmployeeOnboard.Domain.Entities.RefreshToken", "EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.Employee", b =>
                 {
                     b.Navigation("EmployeeRoles");
 
                     b.Navigation("ForgotPasswordToken");
+
+                    b.Navigation("RefreshToken");
                 });
 
             modelBuilder.Entity("EmployeeOnboard.Domain.Entities.Role", b =>

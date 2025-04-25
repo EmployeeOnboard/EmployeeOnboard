@@ -40,8 +40,8 @@ public class DbInitializer
             Role = "SuperAdmin",
             CreatedAt = DateTime.UtcNow,
             Status = EmployeeStatus.Active,
-            RefreshToken = null,
-            RefreshTokenExpiryTime = null
+            //RefreshToken = null,
+            //RefreshTokenExpiryTime = null
         };
 
         _context.Employees.Add(superAdmin);

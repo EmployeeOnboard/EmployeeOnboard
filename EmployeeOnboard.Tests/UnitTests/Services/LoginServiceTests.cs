@@ -2,11 +2,11 @@
 using Xunit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using EmployeeOnboard.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using EmployeeOnboard.Domain.Entities;
 using EmployeeOnboard.Application.DTOs;
 using EmployeeOnboard.Infrastructure.Data;
+using EmployeeOnboard.Infrastructure.Services.Employees;
 
 
 public class AuthServiceTests

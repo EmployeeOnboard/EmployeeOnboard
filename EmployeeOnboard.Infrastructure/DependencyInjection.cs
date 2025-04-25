@@ -4,6 +4,7 @@ using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Application.Interfaces.UOW;
 using EmployeeOnboard.Infrastructure.Repositories;
 using EmployeeOnboard.Infrastructure.Services;
+using EmployeeOnboard.Infrastructure.Services.Employees;
 using EmployeeOnboard.Infrastructure.Services.Initilization;
 using EmployeeOnboard.Infrastructure.Services.Notification;
 using EmployeeOnboard.Infrastructure.Services.PasswordManagementService;

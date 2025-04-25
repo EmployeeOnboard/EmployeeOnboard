@@ -1,9 +1,15 @@
 ﻿using AutoMapper;
 using EmployeeOnboard.Application.DTOs;
+using EmployeeOnboard.Application.Interfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Domain.Entities;
 using EmployeeOnboard.Application.DTOs.PasswordManagementDTO;
+using EmployeeOnboard.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Authentication;
+using System.Security.Claims;
 
 
 namespace EmployeeOnboard.Api.Controllers
@@ -17,14 +23,19 @@ namespace EmployeeOnboard.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IChangePassword _changePasswordService;
         private readonly IForgotPasswordService _forgotPasswordService;
+        private readonly IAuthService _authService;
+        private readonly ILogoutService _logoutService;
 
-        public AccountsController(IRegisterService registerService, ILogger<AccountsController> logger, IMapper mapper, IChangePassword changePasswordService, IForgotPasswordService forgotPasswordService)
+        
+        public AccountsController(IRegisterService registerService, ILogger<AccountsController> logger, IMapper mapper, IChangePassword changePasswordService, IForgotPasswordService forgotPasswordService, IAuthService authService, ILogoutService logoutService)
         {
             _registerService = registerService ?? throw new ArgumentNullException(nameof(registerService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _changePasswordService = changePasswordService;
             _forgotPasswordService = forgotPasswordService;
+            _authService = authService;
+            _logoutService = logoutService;
         }
 
         [HttpPost("register")]
@@ -75,6 +86,51 @@ namespace EmployeeOnboard.Api.Controllers
             await _forgotPasswordService.ResetPasswordAsync(request);
             return Ok(new { message = "Password has been reset successfully." });
         }
+        
+
+
+        [HttpPost]
+        [Route("auth/token")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
+        {
+            try
+            {
+                var result = await _authService.LoginAsync(loginDTO);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                var innerMessage = ex.InnerException?.Message ?? "No inner exception";
+                _logger.LogError(ex, "Unhandled exception in login controller");
+
+                return StatusCode(500, new
+                {
+                    Message = "Internal Server Error",
+                    Error = ex.Message,
+                    InnerError = innerMessage
+                });
+            }
+        }
+
+
+
+
+       
+
+        [HttpPost]
+        [Route("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            var result = await _logoutService.LogoutAsync(User);  // User is the ClaimsPrincipal
+            if (!result.Success)
+            {
+                _logger.LogWarning("Logout failed for user {UserId}: {Message}", User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, result.Message);
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Message);
+        }
+
 
     }
 }
