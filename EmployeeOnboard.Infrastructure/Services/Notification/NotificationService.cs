@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
-using System.Text.Json;
-using System.Threading.Tasks;
 using EmployeeOnboard.Application.DTOs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using EmployeeOnboard.Domain.Models;
-using Azure.Core;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Domain.Enums;
 

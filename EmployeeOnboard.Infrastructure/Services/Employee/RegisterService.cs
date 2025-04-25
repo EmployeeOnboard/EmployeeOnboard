@@ -58,7 +58,7 @@ public class RegisterService : IRegisterService
         return (true, $"Employee registered successfully. Employee Number: {employeeNumber}, Password: {generatedPassword}");
     }
 
-    private string GenerateRandomPassword(int length = 12) 
+    private static string GenerateRandomPassword(int length = 12)
     {
         const string upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         const string lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";
@@ -130,7 +130,7 @@ public class RegisterService : IRegisterService
         return false;
     }
 
-    private string GenerateEmployeeNumber()
+    private static string GenerateEmployeeNumber()
     {
         return Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
     }

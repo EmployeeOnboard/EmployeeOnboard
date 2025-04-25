@@ -7,7 +7,6 @@ using EmployeeOnboard.Infrastructure.Services;
 using EmployeeOnboard.Infrastructure.Services.Initilization;
 using EmployeeOnboard.Infrastructure.Services.Notification;
 using EmployeeOnboard.Infrastructure.Services.PasswordManagementService;
-using Microsoft.AspNetCore.Identity;
 using EmployeeOnboard.Infrastructure.UOW;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

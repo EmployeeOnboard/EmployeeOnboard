@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using EmployeeOnboard.Application.DTOs;
-using EmployeeOnboard.Application.Interfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Domain.Entities;
 using EmployeeOnboard.Application.DTOs.PasswordManagementDTO;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using EmployeeOnboard.Infrastructure.Services.PasswordManagementService;
 
 
 namespace EmployeeOnboard.Api.Controllers

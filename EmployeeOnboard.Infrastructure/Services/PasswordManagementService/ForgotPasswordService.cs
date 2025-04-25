@@ -123,12 +123,8 @@ using EmployeeOnboard.Application.DTOs.PasswordManagementDTO;
 using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Domain.Entities;
-using EmployeeOnboard.Domain.Enums;
 using EmployeeOnboard.Infrastructure.Services.Notification;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace EmployeeOnboard.Infrastructure.Services.PasswordManagementService
 {
@@ -137,14 +133,14 @@ namespace EmployeeOnboard.Infrastructure.Services.PasswordManagementService
         private readonly IEmployeeRepository _employeeRepository;
         private readonly INotificationService _notificationService;
         private readonly IConfiguration _configuration;
-        private readonly IEmailTemplateService _emailTemplateService;
+        private readonly EmailTemplateService _emailTemplateService;
         private readonly IForgotPasswordTokenRepository _forgotPasswordTokenRepository;
 
         public ForgotPasswordService(
             IEmployeeRepository employeeRepository,
             INotificationService notificationService,
             IConfiguration configuration,
-            IEmailTemplateService emailTemplateService,
+            EmailTemplateService emailTemplateService,
             IForgotPasswordTokenRepository forgotPasswordTokenRepository)
         {
             _employeeRepository = employeeRepository;
