@@ -7,6 +7,8 @@ using EmployeeOnboard.Application.DTOs.PasswordManagementDTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using EmployeeOnboard.Infrastructure.Services.PasswordManagementService;
+using Microsoft.SqlServer.Server;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace EmployeeOnboard.Api.Controllers
@@ -15,7 +17,7 @@ namespace EmployeeOnboard.Api.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly IRegisterService _registerService;
+        private readonly IRegisterService _registerService; 
         private readonly ILogger<AccountsController> _logger;
         private readonly IMapper _mapper;
         private readonly IChangePassword _changePasswordService;
@@ -58,26 +60,84 @@ namespace EmployeeOnboard.Api.Controllers
             }
         }
 
+        //[HttpPost("change-password")]
+        //public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
+        //{
+        //    await _changePasswordService.ChangePasswordAsync(dto);
+        //    return Ok(new { message = "Password changed successfully." });
+        //}
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
         {
-            await _changePasswordService.ChangePasswordAsync(dto);
-            return Ok(new { message = "Password changed successfully." });
+            try
+            {
+                await _changePasswordService.ChangePasswordAsync(dto);
+                return Ok(new { message = "Password changed successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while changing password for user: {Email}", dto.Email);
+
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Failed to change password. Please try again later."
+                });
+            }
         }
 
+
+        //[HttpPost("forgot-password")]
+        //public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO dto)
+
+        //{
+        //    await _forgotPasswordService.ForgotPasswordAsync(dto.Email);
+        //    return Ok("Reset link sent if email exists.");
+        //}
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO dto)
+
         {
-            await _forgotPasswordService.ForgotPasswordAsync(dto.Email);
-            return Ok("Reset link sent if email exists.");
+            try
+            {
+                await _forgotPasswordService.ForgotPasswordAsync(dto.Email);
+                return Ok(new { message = "Reset link sent if email exists." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while processing forgot password for email:{ Email}", dto.Email);
+
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Something went wrong while trying to process your request. Please try again later."
+                });
+            }
         }
 
+        //[HttpPost("reset-password")]
+        //public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDTO request)
+        //{
+        //    await _forgotPasswordService.ResetPasswordAsync(request);
+        //    return Ok(new { message = "Password has been reset successfully." });
+        //}
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDTO request)
         {
-            await _forgotPasswordService.ResetPasswordAsync(request);
-            return Ok(new { message = "Password has been reset successfully." });
+            try
+            {
+                await _forgotPasswordService.ResetPasswordAsync(request);
+                return Ok(new { message = "Password has been reset successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while resetting password for email: {Email}", request.Email);
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An error occurred while resetting your password. Please try again later."
+                });
+            }
         }
-
     }
 }
