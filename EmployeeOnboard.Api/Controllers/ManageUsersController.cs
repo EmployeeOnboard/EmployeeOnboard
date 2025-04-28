@@ -1,5 +1,4 @@
 ﻿using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeOnboard.Api.Controllers
