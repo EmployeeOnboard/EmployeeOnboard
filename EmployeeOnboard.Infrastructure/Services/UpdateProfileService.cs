@@ -78,16 +78,17 @@ namespace EmployeeOnboard.Infrastructure.Services
                 return Result<UpdatedUserDTO>.Success(UpdatedUserDto, "Profile updated successfully.");
             }
             else
-                {
-                    return Result<UpdatedUserDTO>.Failure("No changes were saved.");
-                }
-
+            {
+                return Result<UpdatedUserDTO>.Failure("No changes were saved.");
             }
+
         }
     }
+}
 
 
 
-   
+
+
 
 

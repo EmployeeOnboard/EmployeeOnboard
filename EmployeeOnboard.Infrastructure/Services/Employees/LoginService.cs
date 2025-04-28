@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -96,7 +96,9 @@ namespace EmployeeOnboard.Infrastructure.Services.Employees
                 new Claim(JwtRegisteredClaimNames.Sub, employee.Id.ToString()), // This is used in your LogoutService
                 new Claim(JwtRegisteredClaimNames.Email, employee.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()) // This is also crucial for logout
+                new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()), // This is also crucial for logout
+                new Claim(ClaimTypes.Role, employee.Role) // 👈 Add the user's role here
+
             };
 
             var token = new JwtSecurityToken(

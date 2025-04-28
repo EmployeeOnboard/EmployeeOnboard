@@ -9,6 +9,7 @@ using FluentValidation.AspNetCore;
 using EmployeeOnboard.Infrastructure;
 using Microsoft.OpenApi.Models;
 using EmployeeOnboard.Infrastructure.Services.Initilization;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,7 +92,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Jwt:Secret"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Jwt:Secret"])),
+        RoleClaimType = ClaimTypes.Role
     };
     // ✅ Add this block to log validation errors
     options.Events = new JwtBearerEvents
