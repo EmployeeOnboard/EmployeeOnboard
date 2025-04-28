@@ -1,0 +1,15 @@
+﻿{
+    "EmailTemplates": {
+      "WelcomeEmail": {
+        "Subject": "Welcome to the Company, {FullName}!",
+        "Body": "<p>Hello {FullName},</p><p>Your account has been created.</p><p><strong>Employee Number:</strong> {EmployeeNumber}</p><p><strong>Password:</strong> {Password}</p><p>You can now log in using your email</p>"
+      },
+
+    "ForgotPassword": {
+      "Subject": "Reset Your Password",
+      "Body": "Hi {UserName},<br/><br/>Click <a href=\"{ResetLink}\">here</a> to reset your password. This link expires in {ExpiryTime}.<br/><br/>Thanks!"
+    }
+
+  }
+   
+}
