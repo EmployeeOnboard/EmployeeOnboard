@@ -6,6 +6,7 @@ using EmployeeOnboard.Application.Shared;
 using EmployeeOnboard.Infrastructure.Repositories;
 using EmployeeOnboard.Infrastructure.Services;
 using EmployeeOnboard.Infrastructure.Services.BackgroundJobs;
+using EmployeeOnboard.Infrastructure.Services.Employees;
 using EmployeeOnboard.Infrastructure.Services.Initilization;
 using EmployeeOnboard.Infrastructure.Services.Notification;
 using EmployeeOnboard.Infrastructure.Services.PasswordManagementService;

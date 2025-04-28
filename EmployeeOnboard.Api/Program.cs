@@ -9,13 +9,14 @@ using FluentValidation.AspNetCore;
 using EmployeeOnboard.Infrastructure;
 using Microsoft.OpenApi.Models;
 using EmployeeOnboard.Infrastructure.Services.Initilization;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //This line ensures emailtemplate.json is read into IConfiguration
 builder.Configuration.AddJsonFile("EmailTemplates.json", optional: false, reloadOnChange: true);
 
-//Services
+//Services 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation()
@@ -79,9 +80,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 
 
-
-
-// Configure authentication
+//Configure authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
@@ -93,7 +92,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Jwt:Secret"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Jwt:Secret"])),
+        RoleClaimType = ClaimTypes.Role
     };
     // ✅ Add this block to log validation errors
     options.Events = new JwtBearerEvents
@@ -107,14 +107,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 });
 
 
-var app = builder.Build();
 
-using (var scope = app.Services.CreateScope()) // as soon as the app starts, it checks the db and if the superadmin isn't present, it creates one automatically
-{
-    var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
-    await dbInitializer.SeedSuperAdminAsync();
-}
+    var app = builder.Build();
 
+    using (var scope = app.Services.CreateScope()) // as soon as the app starts, it checks the db and if the superadmin isn't present, it creates one automatically
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+        await dbInitializer.SeedSuperAdminAsync();
+    }
+
+
+
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
