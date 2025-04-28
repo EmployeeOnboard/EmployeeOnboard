@@ -138,7 +138,9 @@ public class RegisterService : IRegisterService
     private async Task RegisterEmployeeToDatabaseAsync(Employee employee)
     {
         _logger.LogInformation("Registering employee. Employee Number: {EmployeeNumber}, Email: {Email}", employee.EmployeeNumber, employee.Email);
+
         await _employeeRepository.AddAsync(employee);
+
         _logger.LogInformation("Successfully registered employee. Employee ID: {EmployeeId}, Employee Number: {EmployeeNumber}, {Email}",
                                employee.Id, employee.EmployeeNumber, employee.Email);
     }
@@ -161,12 +163,14 @@ public class RegisterService : IRegisterService
 
             await _notificationService.SendEmailAsync(emailDto);
             _logger.LogInformation("Welcome email sent to {Email}", employee.Email);
+
             return true;
         }
         catch (Exception ex)
         {
             _logger.LogError("Failed to send email to {Email}. Error: {Message}", employee.Email, ex.Message);
             await LogEmailFailureAsync(employee, generatedPassword, ex);
+
             return false;
         }
     }
