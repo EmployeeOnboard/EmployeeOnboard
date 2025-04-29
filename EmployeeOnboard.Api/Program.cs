@@ -9,13 +9,14 @@ using FluentValidation.AspNetCore;
 using EmployeeOnboard.Infrastructure;
 using Microsoft.OpenApi.Models;
 using EmployeeOnboard.Infrastructure.Services.Initilization;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //This line ensures emailtemplate.json is read into IConfiguration
 builder.Configuration.AddJsonFile("EmailTemplates.json", optional: false, reloadOnChange: true);
 
-//Services
+//Services 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation()
@@ -60,7 +61,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("https://ngrok.com/r/iep") 
+            policy.AllowAnyOrigin()
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -91,7 +92,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Jwt:Secret"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Jwt:Secret"])),
+        RoleClaimType = ClaimTypes.Role
     };
     // ✅ Add this block to log validation errors
     options.Events = new JwtBearerEvents
@@ -125,11 +127,13 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseRouting();
+
 app.UseCors("AllowFrontend");
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseHttpsRedirection();
 
 app.MapControllers();
 

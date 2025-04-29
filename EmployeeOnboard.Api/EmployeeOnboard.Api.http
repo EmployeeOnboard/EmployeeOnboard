@@ -6,12 +6,13 @@ POST {{EmployeeOnboard.Api_HostAddress}}/api/account/register
 Content-Type: application/json
 
 { 
-  "firstName": "Elvis",
+  "firstName": "Eris",
   "middleName": "",
-  "lastName": "O",
-  "phoneNumber": "254735765565",
-  "email": "santaemmanuel2018@gmail.com",
-  "address": "4000 mombasa",
+  "lastName": "Sharon",
+  "phoneNumber": "254723243545",
+  "altPhoneNumber": "",
+  "email": "jage68368@lushosa.com",
+  "address": "00100",
   "role": "Developer"
 }
 
