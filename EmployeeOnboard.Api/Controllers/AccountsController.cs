@@ -4,11 +4,8 @@ using EmployeeOnboard.Application.Interfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Domain.Entities;
 using EmployeeOnboard.Application.DTOs.PasswordManagementDTO;
-using EmployeeOnboard.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Authentication;
 using System.Security.Claims;
 
 
@@ -26,7 +23,7 @@ namespace EmployeeOnboard.Api.Controllers
         private readonly IAuthService _authService;
         private readonly ILogoutService _logoutService;
 
-        
+
         public AccountsController(IRegisterService registerService, ILogger<AccountsController> logger, IMapper mapper, IChangePassword changePasswordService, IForgotPasswordService forgotPasswordService, IAuthService authService, ILogoutService logoutService)
         {
             _registerService = registerService ?? throw new ArgumentNullException(nameof(registerService));
@@ -86,7 +83,7 @@ namespace EmployeeOnboard.Api.Controllers
             await _forgotPasswordService.ResetPasswordAsync(request);
             return Ok(new { message = "Password has been reset successfully." });
         }
-        
+
 
 
         [HttpPost]
@@ -111,11 +108,6 @@ namespace EmployeeOnboard.Api.Controllers
                 });
             }
         }
-
-
-
-
-       
 
         [HttpPost]
         [Route("logout")]

@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using EmployeeOnboard.Infrastructure.Data;
 using System.Security.Authentication;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeOnboard.Infrastructure.Services.Employees
 {
@@ -26,7 +27,7 @@ namespace EmployeeOnboard.Infrastructure.Services.Employees
             _logger = logger;
         }
 
-        public async Task<AuthResponseDTO> LoginAsync(LoginDTO loginDTO)
+        public async Task<AuthResponseDTO> LoginAsync([FromBody] LoginDTO loginDTO)
         {
             try
             {
@@ -61,7 +62,7 @@ namespace EmployeeOnboard.Infrastructure.Services.Employees
             {
                 throw; // Bubble up to controller
             }
-            
+
 
             catch (Exception ex)
             {
