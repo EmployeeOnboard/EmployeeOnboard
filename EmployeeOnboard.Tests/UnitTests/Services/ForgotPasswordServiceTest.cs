@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using EmployeeOnboard.Application.DTOs;
-using EmployeeOnboard.Application.DTOs.PasswordManagementDTO;
+﻿using EmployeeOnboard.Application.DTOs;
 using EmployeeOnboard.Application.Interfaces.RepositoryInterfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Domain.Entities;
@@ -13,7 +9,6 @@ using EmployeeOnboard.Infrastructure.Services.PasswordManagementService;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using Xunit;
 
 namespace EmployeeOnboard.Tests.Services.PasswordManagement
 {
@@ -22,7 +17,7 @@ namespace EmployeeOnboard.Tests.Services.PasswordManagement
         private readonly Mock<IEmployeeRepository> _employeeRepoMock = new();
         private readonly Mock<INotificationService> _notificationServiceMock = new();
         private readonly Mock<IConfiguration> _configMock = new();
-        private readonly Mock<IEmailTemplateService> _emailTemplateServiceMock = new();
+        private readonly Mock<EmailTemplateService> _emailTemplateServiceMock = new();
         private readonly Mock<IForgotPasswordTokenRepository> _tokenRepoMock = new();
         private readonly ForgotPasswordService _service;
 

@@ -11,10 +11,10 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<Employee> Employees { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<EmployeeRole> EmployeeRoles { get; set; }
     public DbSet<EmailLog> EmailLogs { get; set; }
-
     public DbSet<ForgotPasswordToken> ForgotPasswordToken { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

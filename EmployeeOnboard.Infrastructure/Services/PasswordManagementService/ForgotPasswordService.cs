@@ -21,14 +21,14 @@ namespace EmployeeOnboard.Infrastructure.Services.PasswordManagementService
         private readonly IEmployeeRepository _employeeRepository;
         private readonly INotificationService _notificationService;
         private readonly IConfiguration _configuration;
-        private readonly IEmailTemplateService _emailTemplateService;
+        private readonly EmailTemplateService _emailTemplateService;
         private readonly IForgotPasswordTokenRepository _forgotPasswordTokenRepository;
 
         public ForgotPasswordService(
             IEmployeeRepository employeeRepository,
             INotificationService notificationService,
             IConfiguration configuration,
-            IEmailTemplateService emailTemplateService,
+            EmailTemplateService emailTemplateService,
             IForgotPasswordTokenRepository forgotPasswordTokenRepository)
         {
             _employeeRepository = employeeRepository;

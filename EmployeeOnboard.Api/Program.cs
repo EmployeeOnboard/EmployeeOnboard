@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using EmployeeOnboard.Application.Mappings;
 using EmployeeOnboard.Application.Validators;
 using EmployeeOnboard.Infrastructure.Data;
@@ -10,41 +9,21 @@ using FluentValidation.AspNetCore;
 using EmployeeOnboard.Infrastructure;
 using Microsoft.OpenApi.Models;
 using EmployeeOnboard.Infrastructure.Services.Initilization;
-using EmployeeOnboard.Infrastructure.Services.Notification;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
-
-//Set up CORS 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", builder =>
-    {
-        builder.AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader();
-    });
-
-});
-
-
 
 //This line ensures emailtemplate.json is read into IConfiguration
 builder.Configuration.AddJsonFile("EmailTemplates.json", optional: false, reloadOnChange: true);
 
-//Services
+//Services 
 builder.Services.AddInfrastructure(builder.Configuration);
-
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation()
                 .AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterEmployeeValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.AddScoped<IEmailTemplateService, EmailTemplateService>();
-
-
-//builder.Services.AddSwaggerGen();
-
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Employee Onboard API", Version = "v1" });
@@ -76,6 +55,17 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// CORS Configuration 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
 //db connection
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -90,56 +80,60 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 
 
-
-
-// Configure authentication
-    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Jwt:Secret"]))
-        };
-        // ✅ Add this block to log validation errors
-        options.Events = new JwtBearerEvents
-        {
-            OnAuthenticationFailed = context =>
-            {
-                Console.WriteLine($"Authentication failed: {context.Exception.Message}");
-                return Task.CompletedTask;
-            }
-        };
-    });
-
-
-var app = builder.Build();
-
-using (var scope = app.Services.CreateScope()) // as soon as the app starts, it checks the db and if the superadmin isn't present, it creates one automatically
+//Configure authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
 {
-    var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
-    await dbInitializer.SeedSuperAdminAsync();
-}
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(builder.Configuration["Jwt:Secret"])),
+        RoleClaimType = ClaimTypes.Role
+    };
+    // ✅ Add this block to log validation errors
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            return Task.CompletedTask;
+        }
+    };
+});
+
+
+
+    var app = builder.Build();
+
+    using (var scope = app.Services.CreateScope()) // as soon as the app starts, it checks the db and if the superadmin isn't present, it creates one automatically
+    {
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+        await dbInitializer.SeedSuperAdminAsync();
+    }
+
 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseCors("AllowFrontend");
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+
 app.UseRouting();
-app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseHttpsRedirection();
 
 app.MapControllers();
 

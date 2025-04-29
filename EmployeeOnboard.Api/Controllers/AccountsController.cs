@@ -4,9 +4,12 @@ using EmployeeOnboard.Application.Interfaces;
 using EmployeeOnboard.Application.Interfaces.ServiceInterfaces;
 using EmployeeOnboard.Domain.Entities;
 using EmployeeOnboard.Application.DTOs.PasswordManagementDTO;
+using EmployeeOnboard.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using EmployeeOnboard.Infrastructure.Services.PasswordManagementService;
+using System.Security.Authentication;
+using System.Security.Claims;
 
 
 namespace EmployeeOnboard.Api.Controllers
@@ -20,14 +23,23 @@ namespace EmployeeOnboard.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IChangePassword _changePasswordService;
         private readonly IForgotPasswordService _forgotPasswordService;
+        private readonly IAuthService _authService;
+        private readonly ILogoutService _logoutService;
+        private readonly IUpdateProfileService _updateProfileService;
 
-        public AccountsController(IRegisterService registerService, ILogger<AccountsController> logger, IMapper mapper, IChangePassword changePasswordService, IForgotPasswordService forgotPasswordService)
+
+
+        public AccountsController(IRegisterService registerService, ILogger<AccountsController> logger, IMapper mapper, IChangePassword changePasswordService, IForgotPasswordService forgotPasswordService, IAuthService authService, ILogoutService logoutService, IUpdateProfileService updateProfileService)
         {
             _registerService = registerService ?? throw new ArgumentNullException(nameof(registerService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _changePasswordService = changePasswordService;
             _forgotPasswordService = forgotPasswordService;
+            _authService = authService;
+            _logoutService = logoutService;
+            _updateProfileService = updateProfileService;
+
         }
 
         [HttpPost("register")]
@@ -78,6 +90,70 @@ namespace EmployeeOnboard.Api.Controllers
             await _forgotPasswordService.ResetPasswordAsync(request);
             return Ok(new { message = "Password has been reset successfully." });
         }
+        
 
+
+        [HttpPost]
+        [Route("auth/token")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
+        {
+            try
+            {
+                var result = await _authService.LoginAsync(loginDTO);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                var innerMessage = ex.InnerException?.Message ?? "No inner exception";
+                _logger.LogError(ex, "Unhandled exception in login controller");
+
+                return StatusCode(500, new
+                {
+                    Message = "Internal Server Error",
+                    Error = ex.Message,
+                    InnerError = innerMessage
+                });
+            }
+
+        }
+
+        [HttpPost]
+        [Route("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            var result = await _logoutService.LogoutAsync(User);  // User is the ClaimsPrincipal
+            if (!result.Success)
+            {
+                _logger.LogWarning("Logout failed for user {UserId}: {Message}", User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, result.Message);
+                return BadRequest(result.Message);
+            }
+            return Ok(result.Message);
+        }
+
+        [Authorize(Roles = "Employee, Admin, SuperAdmin")]
+        [HttpPut("update-profile")]
+        public async Task<IActionResult> UpdateProfile(UpdateProfileDTO dto)
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var role = User.FindFirstValue(ClaimTypes.Role);
+
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(role))
+            {
+                _logger.LogWarning("user email or role not found in claims");
+
+                return Unauthorized("Invalid token: missing email or role");
+            }
+
+            var result = await _updateProfileService.UpdateProfileAsync(dto, email, role);
+
+            if (result == null)
+            {
+                _logger.LogError("Failed to update profile for user: {Message}", result.Message);
+                return BadRequest(new { success = false, message = result.Message });
+            }
+
+            return Ok(new { success = true, message = result.Message, data = result.Data });
+        }
     }
 }
