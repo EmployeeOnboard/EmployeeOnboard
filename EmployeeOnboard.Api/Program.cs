@@ -61,7 +61,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("https://ngrok.com/r/iep") 
+            policy.AllowAnyOrigin()
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -127,11 +127,13 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseRouting();
+
 app.UseCors("AllowFrontend");
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseHttpsRedirection();
 
 app.MapControllers();
 
