@@ -9,6 +9,12 @@
 		<OutputType>Library</OutputType>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="UnitTests\Controllers\**" />
+	  <EmbeddedResource Remove="UnitTests\Controllers\**" />
+	  <None Remove="UnitTests\Controllers\**" />
+	</ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
@@ -38,10 +44,6 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="UnitTests\Controllers\" />
   </ItemGroup>
 
 </Project>

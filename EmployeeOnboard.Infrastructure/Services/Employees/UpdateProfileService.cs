@@ -8,7 +8,7 @@ using EmployeeOnboard.Infrastructure.Repositories;
 using EmployeeOnboard.Application.Shared;
 
 
-namespace EmployeeOnboard.Infrastructure.Services
+namespace EmployeeOnboard.Infrastructure.Services.Employees
 {
     public class UpdateProfileService : IUpdateProfileService
     {
